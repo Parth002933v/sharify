@@ -3,13 +3,15 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProviderPro
 // pages
 import Root from '../pages/root'
 import Index from '../pages'
+import RichText from '@/pages/richText'
+import { HOME_PATH, RICHTEXT_PATH } from '@/common/routeConstant'
 
 export const RoutesTSX: RouterProviderProps = {
     router: createBrowserRouter(createRoutesFromElements(
 
-        <Route path='/' element={<Root />}>
-            <Route index element={<Index />} />
-            <Route path='/rich/' element={<Index />} />
+        <Route path={HOME_PATH} element={<Root />}>
+            <Route index  element={<Index />} />
+            <Route path={RICHTEXT_PATH} element={<RichText />} />
         </Route >
 
     ))
