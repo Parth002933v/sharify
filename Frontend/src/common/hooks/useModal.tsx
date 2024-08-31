@@ -1,47 +1,54 @@
-// import { useCallback, useMemo, useState } from "react";
-// import * as React from "react";
+import { ModalWrapper } from "@/components/richText/editor/components";
+import { useCallback, useMemo, useState } from "react";
+import * as React from "react";
 
-// // import Modal from "../../components/ui/Modal";
+// Define the shape of the modal content
+interface IUseModal {
+  title: string;
+  content: React.ReactNode;
+  closeOnClickOutside: boolean;
+}
 
-// export default function useModal() {
-//     const [modalContent, setModalContent] = useState(null);
+// Define the type for the function that returns content for the modal
+type GetContentFunction = (onClose: () => void) => React.ReactNode;
 
-//     const onClose = useCallback(() => {
-//         setModalContent(null);
-//     }, []);
+export default function useModal() {
+  const [modalContent, setModalContent] = useState<IUseModal | null>(null);
 
-//     const modal = useMemo(() => {
-//         if (modalContent === null) {
-//             return null;
-//         }
-//         const { title, content, closeOnClickOutside } = modalContent;
-//         return (
-//             <div
-//                 onClose={onClose}
-//                 title={title}
-//                 open={!!modalContent}
-//                 closeOnClickOutside={closeOnClickOutside}
-//             >
-//                 {content}
-//             </Modal>
-//         );
-//     }, [modalContent, onClose]);
+  const onClose = useCallback(() => {
+    setModalContent(null);
+  }, []);
 
-//     const showModal = useCallback(
-//         (
-//             title: string,
-//             // eslint-disable-next-line no-shadow
-//             getContent: any,
-//             closeOnClickOutside = false
-//         ) => {
-//             setModalContent({
-//                 closeOnClickOutside,
-//                 content: getContent(onClose),
-//                 title,
-//             });
-//         },
-//         [onClose]
-//     );
+  // Memoize the modal component to avoid unnecessary re-renders
+  const modal = useMemo(() => {
+    if (modalContent === null) {
+      return null;
+    }
+    const { title, content } = modalContent;
 
-//     return [modal, showModal];
-// }
+    return (
+      <ModalWrapper onClose={onClose} title={title} open={!!modalContent}>
+        {content}
+      </ModalWrapper>
+    );
+  }, [modalContent, onClose]);
+
+  // Function to display the modal with specific content and title
+  const showModal = useCallback(
+    (
+      title: string,
+      getContent: GetContentFunction,
+      closeOnClickOutside: boolean = false,
+    ) => {
+      setModalContent({
+        closeOnClickOutside,
+        content: getContent(onClose),
+        title,
+      });
+    },
+    [onClose],
+  );
+
+  // Return the modal component and the function to show it
+  return [modal, showModal] as const;
+}

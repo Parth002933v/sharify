@@ -1,24 +1,24 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Header() {
-    return (
-        <header className="fixed z-20 top-0 left-0 w-full p-4 text-black bg-opacity-15 backdrop-blur-[8px]">
-            <div className=" mx-auto flex justify-between items-center">
-                <h1 className="container text-2xl font-bold">
-                    <Link to="/">Sharify</Link>
-                </h1>
-                {/* <nav>
+  return (
+    <header className="left-0 top-0 w-full bg-blue-500 p-4 text-white backdrop-blur-[8px]">
+      <div className="mx-auto flex items-center justify-between">
+        <h1 className="container text-2xl font-bold">
+          <Link to="/">Sharify</Link>
+        </h1>
+        {/* <nav>
                     <Link to="/" className="mx-2">Home</Link>
                     <Link to="/profile" className="mx-2">Profile</Link>
                     <div className=" inline-block"> */}
-                {/* <button 
-                onClick={() => setShowOptions(!showOptions)} 
+        {/* <button
+                onClick={() => setShowOptions(!showOptions)}
                 className="mx-2 px-4 py-2 bg-blue-700 rounded hover:bg-blue-800"
               >
                 Create
               </button> */}
-                {/* {showOptions && (
+        {/* {showOptions && (
                             <div className="absolute right-0 mt-2 bg-white text-black border border-gray-300 rounded shadow-lg">
                                 <Link
                                     to="/editor"
@@ -36,9 +36,9 @@ export default function Header() {
                                 </Link>
                             </div>
                         )} */}
-                {/* </div> */}
-                {/* </nav> */}
-            </div>
-        </header>
-    )
+        {/* </div> */}
+        {/* </nav> */}
+      </div>
+    </header>
+  );
 }

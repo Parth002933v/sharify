@@ -1,83 +1,60 @@
-import { $getRoot, $getSelection, EditorState, LexicalEditor } from 'lexical';
-import { useEffect } from 'react';
+import { EditorState } from "lexical";
 
-import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
-import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { ListPlugin } from '@lexical/react/LexicalListPlugin';
-import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
-import { CEditable, Divider, Placeholder } from './components';
-import lexicalEditorTheme from './theme';
-import ToolBarPlugin from './toolBar';
-import { initialConfig } from './config';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-// import TreeViewPlugin from './plugin/TreeViewPlugin';
-// import {} from "./plugin/TreeViewPlugin"
-
-// const theme = {
-//     // Theme styling goes here
-//     //...
-// }
-
-// Catch any errors that occur during Lexical updates and log them
-// or throw them as needed. If you don't throw them, Lexical will
-// try to recover gracefully without losing user data.
-
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import { CEditable, Divider, Placeholder } from "./components";
+import ToolBarPlugin from "./toolBar";
+import { initialConfig } from "./config";
+import TreeViewPlugin from "./customPlugins/TreeViewPlugin";
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import PlaygroundAutoLinkPlugin from "./customPlugins/AutoLinkPlugin";
 
 export function Editor() {
+  return (
+    <div className="relative mx-auto h-full max-w-[1100px] self-center rounded-xl drop-shadow-lg">
+      <LexicalComposer initialConfig={initialConfig}>
+        {/* <LexicalEditorTopBar /> */}
 
-    // function onChange2(editorState: EditorState) {
+        <ToolBarPlugin />
 
+        <Divider />
+        <RichTextPlugin
+          contentEditable={<CEditable />}
+          placeholder={<Placeholder />}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
 
-    //     console.log("==========",editorState.toJSON(),"=========");
-
-
-    // }
-
-    return (
-        <div className='relative max-w-[1100px]  h-full self-center mx-auto  drop-shadow-lg rounded-xl '>
-            <LexicalComposer initialConfig={initialConfig}>
-                {/* <LexicalEditorTopBar /> */}
-                <ToolBarPlugin />
-
-                <Divider />
-                <RichTextPlugin
-                    contentEditable={<CEditable />}
-                    placeholder={<Placeholder />}
-                    ErrorBoundary={LexicalErrorBoundary}
-                />
-
-                {/* <MyOnChangePlugin onChange={onChange2} /> */}
-
-                <OnChangePlugin onChange={onChange} />
-                <HistoryPlugin />
-                {/* <TreeViewPlugin /> */}
-                <ListPlugin />
-                <LinkPlugin />
-                {/* <ImagesPlugin captionsEnabled={false} /> */}
-                {/* <FloatingTextFormatToolbarPlugin /> */}
-            </LexicalComposer>
-        </div>
-    );
+        <OnChangePlugin onChange={onChange} />
+        <HistoryPlugin />
+        <AutoFocusPlugin />
+        <ListPlugin />
+        <LinkPlugin />
+        {/* <TreeViewPlugin /> */}
+        <PlaygroundAutoLinkPlugin />
+        {/* <ImagesPlugin captionsEnabled={false} /> */}
+        {/* <FloatingTextFormatToolbarPlugin /> */}
+      </LexicalComposer>
+    </div>
+  );
 }
 
-// When the editor changes, you can get notified via the
-// LexicalOnChangePlugin!
 // function onChange(editorState: any) {
 function onChange(editorState: EditorState) {
-    editorState.read(() => {
-        // Read the contents of the EditorState here.
-        const root = $getRoot();
-        const selection = $getSelection();
+  // editorState.read(() => {
+  //     // Read the contents of the EditorState here.
+  //     const root = $getRoot();
+  //     const selection = $getSelection();
 
-        console.log(root, selection);
-    });
+  //     console.log(root, selection);
+  // });
+
+  console.log(editorState.toJSON().root);
 }
-
 
 // function MyOnChangePlugin({ onChange }: { onChange: (editorState: EditorState) => void }) {
 //     const [editor] = useLexicalComposerContext();
@@ -86,7 +63,6 @@ function onChange(editorState: EditorState) {
 //             onChange(editorState);
 //         });
 //     }, [editor, onChange]);
-
 
 //     return null;
 // }

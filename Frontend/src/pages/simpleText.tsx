@@ -1,105 +1,160 @@
-import React, { useRef, useState } from 'react'
-import { Textarea } from '../components/ui/textarea';
-import { Button } from '../components/ui/button';
-import { Dialoag } from '../components/simpleText/protectText';
-// import { DialogDemo } from './protectText';
-import { Earth, Settings } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Textarea } from "../components/ui/textarea";
+import { Dialoag } from "../components/simpleText/protectText";
+import { Earth, Settings } from "lucide-react";
+import { gsap } from "gsap";
+import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import debounce from "lodash.debounce";
+import { postNote } from "@/api/NoteApi";
 
-import { gsap } from 'gsap';
+const validatePassword = (password: string): boolean => {
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasSpecialChar = /[@#$%]/.test(password);
+  const isLongEnough = password.length > 6;
+  return hasUppercase && hasLowercase && hasSpecialChar && isLongEnough;
+};
 
-
-const validatePassword = (password: string) => {
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasSpecialChar = /[@#$%]/.test(password);
-    const isLongEnough = password.length > 6;
-
-    return hasUppercase && hasLowercase && hasSpecialChar && isLongEnough;
+export type NoteMutationType = {
+  hashID: string;
+  content: string;
+  noteType: "lexical" | "markdown";
+  owner?: string;
+  isProtected: boolean;
 };
 
 export default function SimpleText() {
-    const [MessageDialog, setMessageDialog] = useState(false)
-    const boxRef = useRef(null);
-    const [isVisible, setIsVisible] = useState(false);
+  const location = useLocation();
+  const [messageDialog, setMessageDialog] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [text, setText] = useState("");
+  const [isProtected, setIsProtected] = useState(false);
+  const boxRef = useRef<HTMLDivElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+  const mutation: UseMutationResult<void, Error, NoteMutationType> =
+    useMutation({
+      mutationFn: postNote,
+      onSuccess: () => {
+        console.log("Note created");
+      },
+      onError: (err) => {
+        console.error("Error in note creation: ", err);
+      },
+    });
 
-    const [text, setText] = useState('');
-    const [isProtected, setIsProtected] = useState(false);
+  const debouncedMutate = useCallback(
+    debounce((value: NoteMutationType) => {
+      mutation.mutateAsync(value);
+    }, 2000),
+    [mutation],
+  );
 
-    const handleTextChange = (e: any) => {
-        setText(e.target.value);
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(e.target.value);
+    const mutationData: NoteMutationType = {
+      content: e.target.value,
+      hashID: location.hash.replace("#", ""),
+      isProtected: isProtected,
+      noteType: "markdown",
     };
 
+    debouncedMutate(mutationData);
+  };
 
- 
+  const handleClick = () => {
+    if (isVisible) {
+      gsap.to(boxRef.current, { x: "-100%", duration: 1, ease: "power2.out" });
+    } else {
+      gsap.to(boxRef.current, { x: "0%", duration: 1, ease: "power2.out" });
+    }
+    setIsVisible(!isVisible);
+  };
 
-    const handleClick = () => {
-        if (isVisible) {
-            gsap.to(boxRef.current, { x: '-100%', duration: 1, ease: 'power2.out' });
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [text]);
 
-        } else {
-            gsap.to(boxRef.current, { x: '0%', duration: 1, ease: 'power2.out' });
-        }
-        setIsVisible(!isVisible)
+  useEffect(() => {
+    return () => {
+      debouncedMutate.cancel();
     };
+  }, [debouncedMutate]);
 
-    return (
+  return (
+    <div className="min-h-[calc(100vh-8rem)] bg-secondary max-lg:px-5">
+      {/* Menus & Loader */}
+      <div className="fixed bottom-0 left-0 top-20 z-10 flex h-[calc(100vh-7rem)] w-44 flex-col justify-between pb-10">
+        {/* Loader */}
+        <div>
+          <svg
+            fill="currentColor"
+            className="h-10 w-10 animate-spin"
+            viewBox="0 0 16 16"
+          >
+            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+            <path
+              fillRule="evenodd"
+              d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"
+            />
+          </svg>
+        </div>
 
-        < div className=' min-h-[calc(100vh-8rem)] max-lg:px-5  ' >
+        <div ref={boxRef} className="-translate-x-[100%]">
+          <MenuItem />
+          <MenuItem />
+          <MenuItem />
+          <MenuItem />
+          <MenuItem />
+          <MenuItem />
+          <MenuItem />
+        </div>
 
-            <div className='fixed   h-[670px] w-44 z-10 left-0 bottom-0 pb-10  flex flex-col justify-between '>
+        {/* Settings */}
+        <div className="pl-5">
+          <Settings
+            onClick={handleClick}
+            color="white"
+            size={40}
+            className="cursor-pointer rounded-full bg-slate-800 p-2 hover:bg-slate-700"
+          />
+        </div>
+      </div>
 
-                <div ref={boxRef} className={`flex flex-col  h-full mb-1 ml-2 `}>
-                    <MenuItem />
-                    <MenuItem />
-                    <MenuItem />
-                    <MenuItem />
-                    <MenuItem />
-                    <MenuItem />
-                    <MenuItem />
-                </div>
+      {/* Protect Text Button */}
+      <div className="mx-[calc(100vw-13rem)] flex flex-col">
+        <Dialoag
+          text={`${isProtected ? "Unprotect Text" : "Protect Text"}`}
+          messageDialog={messageDialog}
+          setMessageDialog={setMessageDialog}
+        />
+      </div>
 
-
-                <div className='pl-5'>
-                    <Settings onClick={handleClick} color='white' size={"40"} className='bg-slate-800 rounded-full p-2 cursor-pointer hover:bg-slate-700' />
-                </div>
-
-            </div>
-
-            <div className='flex flex-col mx-48'>
-                <Dialoag
-                    text={`${isProtected ? 'Unprotect Text' : 'Protect Text'}`}
-                    messageDialog={MessageDialog}
-                    setMessageDialog={setMessageDialog}
-                />
-            </div>
-
-            <div className=' pb-3'>
-
-                <Textarea
-                    className='inset-0  mx-auto resize-none max-w-[1100px]  min-h-[900px] bg-white drop-shadow-lg self-center justify-center items-center'
-                    value={text}
-                    onChange={handleTextChange}
-                />
-
-            </div>
-
-        </div >
-    );
+      {/* Text Area */}
+      <div className="pb-3">
+        <Textarea
+          ref={textareaRef}
+          className="text-md inset-0 mx-auto min-h-[900px] max-w-[1100px] resize-none overflow-hidden bg-white drop-shadow-lg"
+          value={text}
+          placeholder="Enter Your text here..."
+          onChange={handleTextChange}
+        />
+      </div>
+    </div>
+  );
 }
 
-
 function MenuItem() {
-
-
-    return (
-
-        <div className='flex justify-center items-center w-full  border bg-white rounded-md h-12 my-2 px-3'>
-
-            {/* Publish As Web Page  */}
-            <Earth />
-            <p className='text-center text-sm'>Publish As Web Page</p>
-        </div>
-    )
-
+  return (
+    <div className="my-2 flex h-12 w-full items-center justify-center rounded-md border bg-white px-3">
+      <Earth />
+      <p className="text-center text-sm">Publish As Web Page</p>
+    </div>
+  );
 }

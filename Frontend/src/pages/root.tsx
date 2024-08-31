@@ -1,19 +1,18 @@
-import { Outlet } from 'react-router-dom'
-import Header from '../components/root/header'
-import Footer from '../components/root/footer'
+import Footer from "@/components/root/Footer";
+import Header from "@/components/root/Header";
+import { Outlet } from "react-router-dom";
 
 export default function Root() {
-    return (
-        <div className=' h-full  bg-secondary'>
+  return (
+    <div className="flex h-screen flex-col bg-secondary">
+      <Header />
 
-            <Header />
-
-            <div className='flex flex-col justify-between h-full pt-16 '>
-                <div className='flex-grow inset-0  w-full h-full'>
-                    <Outlet />
-                </div>
-                <Footer />
-            </div>
-        </div>
-    )
+      {/* <div className=' justify-between h-full pt-16 '> */}
+      <div className="flex-grow">
+        <Outlet />
+      </div>
+      {/* </div> */}
+      <Footer />
+    </div>
+  );
 }
