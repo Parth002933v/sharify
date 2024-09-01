@@ -1,6 +1,9 @@
-import { EditorState } from "lexical";
+import { $getRoot, $setSelection, EditorState } from "lexical";
 
-import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import {
+  InitialEditorStateType,
+  LexicalComposer,
+} from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
@@ -13,13 +16,21 @@ import { initialConfig } from "./config";
 import TreeViewPlugin from "./customPlugins/TreeViewPlugin";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import PlaygroundAutoLinkPlugin from "./customPlugins/AutoLinkPlugin";
+import { useEffect } from "react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
-export function Editor() {
+type EditorProp = {
+  onChange: (editorState: EditorState) => void;
+  initialState: string | undefined;
+};
+
+export function Editor(prop: EditorProp) {
   return (
     <div className="relative mx-auto h-full max-w-[1100px] self-center rounded-xl drop-shadow-lg">
-      <LexicalComposer initialConfig={initialConfig}>
+      <LexicalComposer
+        initialConfig={{ ...initialConfig, editorState: prop.initialState }}
+      >
         {/* <LexicalEditorTopBar /> */}
-
         <ToolBarPlugin />
 
         <Divider />
@@ -29,11 +40,12 @@ export function Editor() {
           ErrorBoundary={LexicalErrorBoundary}
         />
 
-        <OnChangePlugin onChange={onChange} />
+        <OnChangePlugin onChange={prop.onChange} />
         <HistoryPlugin />
         <AutoFocusPlugin />
         <ListPlugin />
         <LinkPlugin />
+
         {/* <TreeViewPlugin /> */}
         <PlaygroundAutoLinkPlugin />
         {/* <ImagesPlugin captionsEnabled={false} /> */}
@@ -66,3 +78,19 @@ function onChange(editorState: EditorState) {
 
 //     return null;
 // }
+
+const LoadContentPlugin = ({ content }: { content: string }) => {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    editor.update(() => {
+      const root = $getRoot();
+      root.clear();
+      //   root.fromJSON(JSON.parse(content));
+
+      $setSelection(null);
+    });
+  }, [editor, content]);
+
+  return null;
+};

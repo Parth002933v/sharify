@@ -1,10 +1,19 @@
 import { useNoteMutateLoader } from "@/context/loadingContext";
+import { RootState } from "@/store";
 import { useAppSelector } from "@/store/hooks";
+import { QueryStatus } from "@reduxjs/toolkit/query";
 import { Fragment } from "react";
-import { useSelector } from "react-redux";
 
 export const MutateLoader = () => {
-  const isLoading = useNoteMutateLoader();
+  const mutations = useAppSelector((state) => state.notesApi.mutations);
+  console.log(mutations, "mutation");
+
+  // Find a mutation with the `endpointName` of 'createNote'
+  const createNoteMutation = Object.values(mutations).find(
+    (mutations) => mutations?.endpointName === "createNote",
+  );
+
+  const isLoading = createNoteMutation?.status === QueryStatus.pending;
 
   return (
     <div>

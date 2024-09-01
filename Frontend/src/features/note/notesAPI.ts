@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+
 export type TNote = {
     hashID: string;
     content: string;
@@ -12,6 +13,11 @@ type TNoteRespose = {
     statusCode: number,
     message: string,
     data: TNote
+}
+
+type TFetchNoteProps = {
+    hashID: string,
+    noteType: TNote["noteType"]
 }
 
 export const notesApi = createApi({
@@ -27,12 +33,13 @@ export const notesApi = createApi({
             }),
             invalidatesTags: [{ type: 'Note', id: 'LIST' }],
         }),
-        fetchNote: builder.query<TNoteRespose, string>({
-            query: (hashID: string) => ({
+        fetchNote: builder.query<TNoteRespose, Partial<TFetchNoteProps> & Pick<TFetchNoteProps, "hashID">>({
+            query: ({ hashID, noteType }) => ({
                 method: "GET",
                 url: `api/note/${hashID}`,
+                params: { noteType },
             }),
-            providesTags: (_result, _error, id) => [{ type: 'Note', id }],
+            providesTags: (_result, _error, { hashID }) => [{ type: 'Note', id: hashID }],
         }),
         checkNoteExist: builder.query<TNoteRespose, string>({
             query: () => ({

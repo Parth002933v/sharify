@@ -52,10 +52,16 @@ const handleCreateNote = asyncHandler(async (req: Request<{}, {}, HandleCreateNo
     });
 });
 
-const handleGetNoteByHashID = asyncHandler(async (req: Request<{ hashID: string }>, res: Response) => {
+const handleGetNoteByHashID = asyncHandler(async (req: Request<{ hashID: string }, {}, {}, { noteType: string }>, res: Response) => {
     const { hashID } = req.params
-    const note = await NoteModel.findOne({ hashID: hashID }).select("-_id -__v -updatedAt")
+    const { noteType } = req.query
+
+    console.log(noteType);
+
+    const note = await NoteModel.findOne({ hashID: hashID, noteType: noteType ? noteType.toLowerCase() : "markdown" }).select("-_id -__v -updatedAt")
+
     if (!note) throw new CustomError({ message: "The note is not note awailable with this hashID", statusCode: 404 })
+
     return SendResponse({
         res,
         statusCode: 200,

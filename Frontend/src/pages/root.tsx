@@ -19,7 +19,7 @@ export default function Root() {
 
   return (
     <div className="flex h-screen flex-col bg-secondary">
-      <LoadingBar color="#f11946" ref={loadingBarRef} />
+      <LoadingBar color="#ffffff" ref={loadingBarRef} />
       <Header />
 
       {/* <div className=' justify-between h-full pt-16 '> */}
