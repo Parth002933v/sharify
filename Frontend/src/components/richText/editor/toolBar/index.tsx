@@ -22,6 +22,54 @@ import { mergeRegister } from "@lexical/utils";
 
 const LowPriority = 1;
 
+export default function ToolBar() {
+  const { onClick, blockType, editor, isLink, selectedEventTypes } =
+    useOnClickListner();
+
+  const isIconSelected = (plugin: any) =>
+    selectedEventTypes.includes(plugin.event) ||
+    blockType.includes(plugin.event);
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  return (
+    <div
+      ref={ref}
+      //   className="sticky top-0 z-20 mb-1 flex h-9 overflow-auto rounded-t-xl bg-white p-1 align-middle"
+      className="sticky top-0 flex flex-wrap gap-3 rounded-tl-md rounded-tr-md border-b bg-white p-1"
+    >
+      {/* list of map */}
+      {pluginsList.map((plugin) => (
+        <TooltipProvider key={plugin.id}>
+          <Tooltip delayDuration={500}>
+            <TooltipTrigger asChild>
+              {/* main component */}
+
+              <div
+                key={plugin.id}
+                className={`${isIconSelected(plugin) ? "bg-[#eee] text-black" : "text-gray-600"} cursor-pointer rounded-lg p-2 hover:bg-[#eee]`}
+                onClick={() => onClick(plugin.event)}
+              >
+                <plugin.Icon
+                //   color={isIconSelected(plugin) ? "secondary" : undefined}
+                />
+              </div>
+            </TooltipTrigger>
+
+            <TooltipContent>{plugin.event}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ))}
+
+      {isLink &&
+        createPortal(<FloatingLinkEditor editor={editor} />, document.body)}
+      {/* {modal} */}
+      {/* {isLink && */}
+      {/* // createPortal(<FloatingLinkEditor editor={editor} />, document.body)} */}
+    </div>
+  );
+}
+
 function positionEditorElement(editor: HTMLDivElement, rect: DOMRect | null) {
   if (rect === null) {
     editor.style.opacity = "0";
@@ -178,53 +226,6 @@ function FloatingLinkEditor({ editor }: { editor: any }) {
           </div>
         </>
       )}
-    </div>
-  );
-}
-
-export default function ToolBar() {
-  const { onClick, blockType, editor, isLink, selectedEventTypes } =
-    useOnClickListner();
-
-  const isIconSelected = (plugin: any) =>
-    selectedEventTypes.includes(plugin.event) ||
-    blockType.includes(plugin.event);
-
-  const ref = useRef<HTMLDivElement>(null);
-
-  return (
-    <div
-      ref={ref}
-      className="flex flex-wrap gap-3 rounded-tl-md rounded-tr-md bg-white"
-    >
-      {/* list of map */}
-      {pluginsList.map((plugin) => (
-        <TooltipProvider key={plugin.id}>
-          <Tooltip delayDuration={500}>
-            <TooltipTrigger asChild>
-              {/* main component */}
-
-              <div
-                key={plugin.id}
-                className={`${isIconSelected(plugin) ? "bg-[#eee] text-black" : "text-gray-600"} cursor-pointer rounded-lg p-2 hover:bg-[#eee]`}
-                onClick={() => onClick(plugin.event)}
-              >
-                <plugin.Icon
-                //   color={isIconSelected(plugin) ? "secondary" : undefined}
-                />
-              </div>
-            </TooltipTrigger>
-
-            <TooltipContent>{plugin.event}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      ))}
-
-      {isLink &&
-        createPortal(<FloatingLinkEditor editor={editor} />, document.body)}
-      {/* {modal} */}
-      {/* {isLink && */}
-      {/* // createPortal(<FloatingLinkEditor editor={editor} />, document.body)} */}
     </div>
   );
 }

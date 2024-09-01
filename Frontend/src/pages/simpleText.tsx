@@ -12,8 +12,6 @@ export default function SimpleText() {
   const { text, setText } = useNoteFetcher({ noteType: "markdown" });
   const { debouncedMutate } = useDebouncedMutation();
 
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
     setText(newText);
@@ -28,6 +26,7 @@ export default function SimpleText() {
     debouncedMutate(mutationData);
   };
 
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
