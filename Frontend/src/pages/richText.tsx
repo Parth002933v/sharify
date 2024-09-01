@@ -2,11 +2,11 @@ import ActionWrapper from "@/common/ActionWrapper";
 import { Editor } from "@/components/richText/editor";
 import { TNote } from "@/features/note/notesAPI";
 import { useDebouncedMutation } from "@/hooks/useDebouncedMutation";
+import { useHashID } from "@/hooks/useHashID";
 import { useNoteFetcher } from "@/hooks/useNoteFetcher";
 import { EditorState } from "lexical";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useHashID } from "./Dashboard";
 
 export default function RichText() {
   const location = useLocation();
