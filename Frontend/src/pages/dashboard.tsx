@@ -1,11 +1,31 @@
 import { Button } from "../components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { generateRandomHash } from "@/lib/utils";
+import { useCheckNoteExistQuery } from "@/features/note/notesAPI";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
-  const navigation = useNavigate();
+  const navigate = useNavigate();
+  const [hashID, setHashID] = useState<string | null>(null);
 
-  const handleGetStarted = () => navigation({ hash: generateRandomHash() });
+  const { data, error, isFetching } = useCheckNoteExistQuery(hashID!, {
+    skip: !hashID,
+  });
+
+  const handleGetStarted = () => {
+    const newHash = generateRandomHash();
+    setHashID(newHash);
+  };
+
+  useEffect(() => {
+    if (hashID && !isFetching) {
+      if (data?.statusCode == 200) {
+        handleGetStarted();
+      } else {
+        navigate({ hash: hashID });
+      }
+    }
+  }, [data, error, hashID, isFetching, navigate]);
 
   return (
     <div className="h-full place-content-center bg-secondary p-6 text-center">

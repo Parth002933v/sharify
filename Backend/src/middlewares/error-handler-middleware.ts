@@ -54,8 +54,7 @@ export const globalErrorHandler = (
     error.statusCode = error.statusCode || 500;
     error.status = error.status || "error";
 
-    console.log(error);
-    
+
     if (process.env.NODE_ENV == "development") {
         devError({ res: res, error: error });
     } else if (process.env.NODE_ENV == "production") {

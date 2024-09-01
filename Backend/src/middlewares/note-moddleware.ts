@@ -11,7 +11,7 @@ export const createNoteValidator: ValidationChain[] = [
         }),
     check("content")
         .notEmpty().withMessage("The content field is required.")
-        .isLength({ min: 5 }).withMessage("Content should be at least 5 characters long."),
+        .isLength({ min: 2 }).withMessage("Content should be at least 1 characters long."),
     check("noteType")
         .custom((value: string) => {
             const noteType = value.toLowerCase();
@@ -28,3 +28,16 @@ export const createNoteValidator: ValidationChain[] = [
         .isBoolean().withMessage("The isProtected field must be a boolean.")
         .optional(),
 ];
+
+
+export const checkNoteExistValidator: ValidationChain[] = [
+    check("hashID")
+        .notEmpty().withMessage("The hashID field is required.")
+        .custom((value: string | undefined) => {
+
+            if (value && value.includes("#")) {
+                throw new Error('The hashID should not contain "#"');
+            }
+            return true;
+        }),
+]

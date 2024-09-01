@@ -1,15 +1,11 @@
-import { Router, Request, Response } from "express";
-import { asyncHandler } from "../utils/async-handler";
-import NoteModel from "../models/note-model";
-import CustomError from "../utils/error-object";
-import { SendResponse } from "../utils/ApiResponse";
-import { createNoteValidator } from "../middlewares/note-moddleware";
-import { handleCreateNote, handleGetNoteByHashID } from "../controllers/note-controller";
+import { Router } from "express";
+import { checkNoteExistValidator, createNoteValidator } from "../middlewares/note-moddleware";
+import { handleCheckNoteExist, handleCreateNote, handleGetNoteByHashID } from "../controllers/note-controller";
 
 const router = Router()
 
+router.get("/check", checkNoteExistValidator, handleCheckNoteExist)
 router.get("/:hashID", handleGetNoteByHashID)
-
 router.post("/", createNoteValidator, handleCreateNote)
 
 

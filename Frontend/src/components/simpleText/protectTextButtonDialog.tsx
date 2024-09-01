@@ -15,7 +15,7 @@ import {
 import { Button } from "../ui/button";
 import { Lock } from "lucide-react";
 
-export function Dialoag({
+export function ProtectTextButtonDialog({
   text,
   messageDialog,
   setMessageDialog,

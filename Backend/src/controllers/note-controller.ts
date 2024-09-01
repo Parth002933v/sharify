@@ -14,7 +14,6 @@ type HandleCreateNoteReqType = {
 };
 
 const handleCreateNote = asyncHandler(async (req: Request<{}, {}, HandleCreateNoteReqType>, res) => {
-    console.log("in handleCreateNote");
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -55,11 +54,8 @@ const handleCreateNote = asyncHandler(async (req: Request<{}, {}, HandleCreateNo
 
 const handleGetNoteByHashID = asyncHandler(async (req: Request<{ hashID: string }>, res: Response) => {
     const { hashID } = req.params
-
     const note = await NoteModel.findOne({ hashID: hashID }).select("-_id -__v -updatedAt")
-
     if (!note) throw new CustomError({ message: "The note is not note awailable with this hashID", statusCode: 404 })
-
     return SendResponse({
         res,
         statusCode: 200,
@@ -68,4 +64,26 @@ const handleGetNoteByHashID = asyncHandler(async (req: Request<{ hashID: string 
     })
 });
 
-export { handleCreateNote, handleGetNoteByHashID };
+
+const handleCheckNoteExist = asyncHandler(async (req: Request<{}, {}, { hashID: string }>, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const errorMessage: string = errors.array().map(err => `${err.type}: ${err.msg}`).join("; ")
+        console.log(errorMessage);
+
+        throw new CustomError({
+            message: `Validation failed: ${errorMessage}`,
+            statusCode: 400,
+        });
+    }
+
+    const { hashID } = req.body
+    const result = await NoteModel.exists({ hashID: hashID.toString() })
+    if (!result) {
+        return SendResponse({ res, statusCode: 404, message: "No content is awailable with this hashID" })
+    } else {
+        return SendResponse({ res, statusCode: 200, message: "Got the content" })
+    }
+})
+
+export { handleCreateNote, handleGetNoteByHashID, handleCheckNoteExist };

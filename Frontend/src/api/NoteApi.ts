@@ -1,5 +1,15 @@
-import { NoteMutationType } from "@/pages/SimpleText"
 import axios from "axios"
+
+export type NoteMutationType = {
+    hashID: string;
+    content: string;
+    noteType: "lexical" | "markdown";
+    owner?: string;
+    isProtected: boolean;
+};
+
+
+
 
 export const postNote = async (data: NoteMutationType) => {
 
