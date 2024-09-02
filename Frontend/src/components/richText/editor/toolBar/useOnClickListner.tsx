@@ -34,11 +34,11 @@ import {
 } from "@lexical/selection";
 import { EventType, eventTypes } from "./toolbarIconsList";
 import useModal from "@/common/hooks/useModal";
+// import { ImagePayload } from "../customNodes/imageNode";
 // import { InsertImageDialog } from "../CustomPlugins/ImagePlugin";
 // import useModal from "../../common/hooks/useModal";
 
 const LowPriority = 1;
-
 const useOnClickListener = () => {
   const [editor] = useLexicalComposerContext();
   const [modal, showModal] = useModal();
@@ -185,7 +185,13 @@ const useOnClickListener = () => {
         // showModal: JSX.Element | ((title: any, getContent: any, closeOnClickOutside?: boolean) => void) | null
         // showModal: JSX.Element | ((title: string, getContent: any, closeOnClickOutside?: boolean) => void) | null
 
-        return showModal("insertImage", (close) => <div></div>);
+        // return showModal("insertImage", (close) => <div></div>);
+        const payload= {
+          src: "https://playground.lexical.dev/assets/yellow-flower-vav9Hsve.jpg",
+          altText: "sample image",
+        };
+
+        // return editor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
       }
       default:
         return;
