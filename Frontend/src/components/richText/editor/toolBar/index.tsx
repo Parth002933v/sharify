@@ -35,8 +35,7 @@ export default function ToolBar() {
   return (
     <div
       ref={ref}
-      //   className="sticky top-0 z-20 mb-1 flex h-9 overflow-auto rounded-t-xl bg-white p-1 align-middle"
-      className="sticky top-0 flex flex-wrap gap-3 rounded-tl-md rounded-tr-md border-b bg-white p-1"
+      className="sticky top-0 z-20 flex flex-wrap gap-3 rounded-tl-md rounded-tr-md border-b bg-white p-1"
     >
       {/* list of map */}
       {pluginsList.map((plugin) => (
@@ -45,15 +44,17 @@ export default function ToolBar() {
             <TooltipTrigger asChild>
               {/* main component */}
 
-              <div
-                key={plugin.id}
-                className={`${isIconSelected(plugin) ? "bg-[#eee] text-black" : "text-gray-600"} cursor-pointer rounded-lg p-2 hover:bg-[#eee]`}
-                onClick={() => onClick(plugin.event)}
-              >
-                <plugin.Icon
-                //   color={isIconSelected(plugin) ? "secondary" : undefined}
-                />
-              </div>
+              {plugin.event == "insertImage" ? (
+                <>image</>
+              ) : (
+                <div
+                  key={plugin.id}
+                  className={`${isIconSelected(plugin) ? "bg-[#eee] text-black" : "text-gray-600"} cursor-pointer rounded-lg p-2 hover:bg-[#eee]`}
+                  onClick={() => onClick(plugin.event)}
+                >
+                  <plugin.Icon />
+                </div>
+              )}
             </TooltipTrigger>
 
             <TooltipContent>{plugin.event}</TooltipContent>

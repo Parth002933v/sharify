@@ -32,7 +32,7 @@ export function Divider() {
   return <div className="h-[1px]"></div>;
 }
 
-export function     ModalWrapper({
+export function ModalWrapper({
   children,
   onClose,
   open,

@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
-  CAN_REDO_COMMAND,
-  CAN_UNDO_COMMAND,
   REDO_COMMAND,
   UNDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
@@ -11,7 +9,6 @@ import {
   $getSelection,
   $isRangeSelection,
   $createParagraphNode,
-  $getNodeByKey,
   RangeSelection,
 } from "lexical";
 import { $setBlocksType } from "@lexical/selection";
@@ -20,11 +17,8 @@ import { useCallback } from "react";
 import {
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
-  REMOVE_LIST_COMMAND,
   $isListNode,
   ListNode,
-  $createListNode,
-  $createListItemNode,
 } from "@lexical/list";
 import {
   $isHeadingNode,
@@ -33,12 +27,6 @@ import {
   HeadingTagType,
 } from "@lexical/rich-text";
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
-import {
-  $createCodeNode,
-  $isCodeNode,
-  getDefaultCodeLanguage,
-  getCodeLanguages,
-} from "@lexical/code";
 import {
   $isParentElementRTL,
   $wrapNodes,
@@ -231,21 +219,29 @@ const useOnClickListener = () => {
   };
 
   function formatList(tag: "ol" | "ul"): void {
-    editor.update(() => {
-      if (tag === "ol") {
-        const selection = $getSelection();
-        if ($isRangeSelection(selection)) {
-          editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
-        }
-        //   editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
-        return;
-      } else {
-        const selection = $getSelection();
-        if ($isRangeSelection(selection)) {
-          editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
-        }
-      }
-    });
+    if (tag == "ol") {
+      editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
+    } else {
+      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+    }
+
+    //     editor.update(() => {
+    //       if (tag === "ol") {
+    //         const selection = $getSelection();
+    //         if ($isRangeSelection(selection)) {
+    //           editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+    //         }
+    //         //   editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
+    //         return;
+    //       } else {
+    //         const selection = $getSelection();
+    //         if ($isRangeSelection(selection)) {
+    //           editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
+    //         }
+    //       }
+    //     }
+
+    // );
     // editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
   }
 
@@ -264,14 +260,6 @@ const useOnClickListener = () => {
   const formatCode = () => {
     if (blockType !== "code") {
       editor.dispatchCommand(FORMAT_TEXT_COMMAND, "code");
-      // below code insert the new block but we only need to format the specific part of the text into code format
-      //   editor.update(() => {
-      //     const selection = $getSelection();
-
-      //     if ($isRangeSelection(selection)) {
-      //       $wrapNodes(selection, () => $createCodeNode());
-      //     }
-      //   });
     }
   };
 

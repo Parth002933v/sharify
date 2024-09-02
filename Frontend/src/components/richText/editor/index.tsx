@@ -1,9 +1,6 @@
-import { $getRoot, $setSelection, EditorState, LexicalEditor } from "lexical";
+import { EditorState } from "lexical";
 
-import {
-  InitialEditorStateType,
-  LexicalComposer,
-} from "@lexical/react/LexicalComposer";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
@@ -18,7 +15,7 @@ import { useEffect } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 type EditorProp = {
-  onChange: (editorState: EditorState) => void;
+  onChange: (editorState: string) => void;
   editor: string | undefined;
 };
 
@@ -28,50 +25,53 @@ export function Editor(prop: EditorProp) {
       <LexicalComposer initialConfig={initialConfig}>
         {/* <LexicalEditorTopBar /> */}
         <ToolBarPlugin />
-
-        {/* <Divider /> */}
         <RichTextPlugin
           contentEditable={<CEditable />}
           placeholder={<Placeholder />}
           ErrorBoundary={LexicalErrorBoundary}
         />
-
-        {/* <OnChangePlugin onChange={prop.onChange} /> */}
         <HistoryPlugin />
         <AutoFocusPlugin />
         <ListPlugin />
         <LinkPlugin />
-
-        {/* <TreeViewPlugin /> */}
         <PlaygroundAutoLinkPlugin />
         {/* <ImagesPlugin captionsEnabled={false} /> */}
         {/* <FloatingTextFormatToolbarPlugin /> */}
-
         <LoadInitialState text={prop.editor} />
-        <MyOnChangePlugin onChange={prop.onChange} />
+        <OnTextChange onChange={prop.onChange} />
       </LexicalComposer>
     </div>
   );
 }
 
-function MyOnChangePlugin({
+//*=================================================================================
+function OnTextChange({
   onChange,
 }: {
-  onChange: (editorState: EditorState) => void;
+  onChange: (editorState: string) => void;
 }) {
   const [editor] = useLexicalComposerContext();
+
   useEffect(() => {
-    return editor.registerUpdateListener(({ editorState }) => {
-      onChange(editorState);
-    });
+    const unregisterUpdateListener = editor.registerUpdateListener(
+      ({ editorState, dirtyLeaves }) => {
+        if (dirtyLeaves.size > 0) {
+          const editorStateJSON = editorState.toJSON();
+          onChange(JSON.stringify(editorStateJSON));
+        }
+      },
+    );
+    return () => {
+      unregisterUpdateListener();
+    };
   }, [editor, onChange]);
+
   return null;
 }
 
 function LoadInitialState({ text }: { text: string | undefined }) {
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
-    // Set the editor state when it's fetched from the API
     editor.update(() => {
       if (text) {
         const parsedEditorState = editor.parseEditorState(text);
