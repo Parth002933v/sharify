@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/async-handler";
 import NoteModel from "../models/note-model";
 import { PageNotFound } from "../utils/html-content";
 
-import { markdownIt } from "../config/MarkdownConfig";
+// import { markdownIt } from "../config/MarkdownConfig";
 
 
 
@@ -17,9 +17,9 @@ export const handlGetPublishedNote = asyncHandler(async (req: Request<{ hashId: 
     if (!note) { return res.send(PageNotFound) }
 
     if (note.noteType == "markdown") {
-        const htmlContent = markdownIt.render(note.content);
+        // const htmlContent = markdownIt.render(note.content);
 
-        res.send(htmlContent)
+        res.send("htmlContent")
     }
 
     // res.send("htmlContent")
