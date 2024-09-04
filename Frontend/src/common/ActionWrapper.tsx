@@ -25,7 +25,7 @@ export default function ActionWrappper(prop: ActionWrappperProp) {
       </div>
 
       {/* Children */}
-      <div className="pb-3">{prop.children}</div>
+      <div className="pb-3 ">{prop.children}</div>
     </div>
   );
 }
