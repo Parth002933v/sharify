@@ -1,4 +1,4 @@
-import { NotebookPen, Settings, SquareM } from "lucide-react";
+import { Earth, NotebookPen, Settings, SquareM } from "lucide-react";
 import { useRef, useState } from "react";
 import { MenuItem } from "./MenuItems";
 import { MutateLoader } from "./MutateLoader";
@@ -32,7 +32,6 @@ export default function MenuBar() {
       <MutateLoader />
 
       <div ref={boxRef} className="-translate-x-[100%]">
-        <MenuItem />
         {isMarkDown ? (
           <MenuItem
             text={`${currentEditorState == "editor" ? "View as markdown" : "back to editor"}`}
@@ -45,7 +44,7 @@ export default function MenuBar() {
           <></>
         )}
 
-        <MenuItem />
+        <MenuItem text="Publish as webPage" Icon={Earth} />
         <MenuItem />
         <MenuItem />
         <MenuItem />

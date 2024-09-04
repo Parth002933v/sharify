@@ -36,13 +36,16 @@ export default function Root() {
 
 export function Uploaderlayout() {
   return (
-    <Link to={HOME_PATH} className="min-h-screen ">
-      <header className="bg-indigo-600 py-4 text-white shadow-lg">
-        <h1 className="text-center text-4xl font-bold">Sharify</h1>
-        <p className="mt-2 text-center">Share your files easily and securely</p>
-      </header>
-
+    <>
+      <Link to={HOME_PATH} className="min-h-screen">
+        <header className="bg-indigo-600 py-4 text-white shadow-lg">
+          <h1 className="text-center text-4xl font-bold">Sharify</h1>
+          <p className="mt-2 text-center">
+            Share your files easily and securely
+          </p>
+        </header>
+      </Link>
       <Outlet />
-    </Link>
+    </>
   );
 }

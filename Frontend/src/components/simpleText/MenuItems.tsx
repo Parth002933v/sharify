@@ -1,10 +1,10 @@
 import gsap from "gsap";
-import { Earth, LucideProps } from "lucide-react";
+import { CircleHelp, Earth, LucideProps } from "lucide-react";
 import { useRef } from "react";
 
 export function MenuItem({
   text = "value is not provide",
-  Icon = Earth,
+  Icon = CircleHelp,
   onClick,
 }: {
   text?: string;
@@ -16,7 +16,7 @@ export function MenuItem({
   return (
     <div
       ref={ref}
-      className="my-2 flex h-12 w-full items-center hover:bg-black/10 justify-center gap-2 rounded-md border bg-white px-3 hover:cursor-pointer"
+      className="my-2 flex h-12 w-full items-center justify-center gap-2 rounded-md border bg-white px-3 hover:cursor-pointer hover:bg-black/10"
       onClick={onClick}
     >
       <Icon />

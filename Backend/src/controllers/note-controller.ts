@@ -92,4 +92,47 @@ const handleCheckNoteExist = asyncHandler(async (req: Request<{}, {}, { hashID: 
     }
 })
 
-export { handleCreateNote, handleGetNoteByHashID, handleCheckNoteExist };
+
+const handlePublishNote = asyncHandler(async (req: Request<{}, {}, { hashID: string }>, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const errorMessage: string = errors.array().map(err => `${err.type}: ${err.msg}`).join("; ")
+        console.log(errorMessage);
+
+        throw new CustomError({
+            message: `Validation failed: ${errorMessage}`,
+            statusCode: 400,
+        });
+    }
+
+    const { hashID } = req.body
+
+    console.log(hashID);
+
+    const note = await NoteModel.findOneAndUpdate({ hashID: hashID }, { isPublished: true }, { new: true })
+
+    if (!note) {
+        throw new CustomError({
+            message: "Something went wrong",
+            statusCode: 400,
+        });
+    }
+
+    const publishedURl = `${req.protocol}://${req.get('host')}/${note.hashID}`;
+
+    return SendResponse({
+        res,
+        message: "Note Published Successfully!",
+        statusCode: 200,
+        data: {
+            publishedURL: publishedURl,
+            hashID: note.hashID,
+            noteType: note.noteType,
+            isProtected: note.isProtected,
+            isPublished: note.isPublished
+        },
+    });
+
+})
+
+export { handleCreateNote, handleGetNoteByHashID, handleCheckNoteExist, handlePublishNote };

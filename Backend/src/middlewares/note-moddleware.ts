@@ -30,7 +30,7 @@ export const createNoteValidator: ValidationChain[] = [
 ];
 
 
-export const checkNoteExistValidator: ValidationChain[] = [
+export const checkNoteHashIdValidator: ValidationChain[] = [
     check("hashID")
         .notEmpty().withMessage("The hashID field is required.")
         .custom((value: string | undefined) => {
