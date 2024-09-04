@@ -46,12 +46,12 @@ const handleFileUpload = asyncHandler(async (req, res) => {
     }
 
     // console.log(result, "result");
-
+    const URl = `${req.protocol}://${req.get('host')}/api/file/${result?.data.id}`;
 
     const fileMetadata = await FileMetadataModel.create({
         fileID: result?.data.id,
         originalName: file.originalname,
-        secureUrl: "asd",
+        secureUrl: URl,
         size: file.size,
         mimeType: file.mimetype,
     })
