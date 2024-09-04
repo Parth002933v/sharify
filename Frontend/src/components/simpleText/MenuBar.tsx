@@ -1,14 +1,23 @@
-import { Settings } from "lucide-react";
+import { NotebookPen, Settings, SquareM } from "lucide-react";
 import { useRef, useState } from "react";
 import { MenuItem } from "./MenuItems";
 import { MutateLoader } from "./MutateLoader";
 import gsap from "gsap";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { toggleEditorState } from "@/features/note/note-slice";
 
 export default function MenuBar() {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
-  const handleClick = () => {
+  const isMarkDown = useAppSelector((state) => state.notekṅḥfds.isMarkDown);
+  const currentEditorState = useAppSelector(
+    (state) => state.notekṅḥfds.currentEditorState,
+  );
+
+  const dispatch = useAppDispatch();
+
+  const handleMenuClick = () => {
     if (isVisible) {
       gsap.to(boxRef.current, { x: "-100%", duration: 1, ease: "power2.out" });
     } else {
@@ -24,6 +33,18 @@ export default function MenuBar() {
 
       <div ref={boxRef} className="-translate-x-[100%]">
         <MenuItem />
+        {isMarkDown ? (
+          <MenuItem
+            text={`${currentEditorState == "editor" ? "View as markdown" : "back to editor"}`}
+            Icon={currentEditorState == "editor" ? SquareM : NotebookPen}
+            onClick={() => {
+              dispatch(toggleEditorState());
+            }}
+          />
+        ) : (
+          <></>
+        )}
+
         <MenuItem />
         <MenuItem />
         <MenuItem />
@@ -35,7 +56,7 @@ export default function MenuBar() {
       {/* Settings */}
       <div className="pl-5">
         <Settings
-          onClick={handleClick}
+          onClick={handleMenuClick}
           color="white"
           size={40}
           className="cursor-pointer rounded-full bg-slate-800 p-2 hover:bg-slate-700"

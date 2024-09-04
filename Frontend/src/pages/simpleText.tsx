@@ -4,17 +4,23 @@ import { useRef, useEffect } from "react";
 // Internal Imports
 import { Textarea } from "../components/ui/textarea";
 import { useDebouncedMutation } from "@/hooks/useDebouncedMutation";
-import { useNoteFetcher } from "@/hooks/useNoteFetcher";
 import ActionWrappper from "@/common/ActionWrapper";
 import { TNote } from "@/features/note/notesAPI";
+import { isMarkdown as checkMarkDown } from "@/utils/utils";
+import { setMarkDown, setText } from "@/features/note/note-slice";
+import { useAppDispatch } from "@/store/hooks";
+import { useNoteFetcher } from "@/hooks/useNoteFetcher";
+import MarkdownRenderer from "@/utils/MarkdownRender";
 
 export default function SimpleText() {
-  const { text, setText } = useNoteFetcher({ noteType: "markdown" });
   const { debouncedMutate } = useDebouncedMutation();
+  const { text } = useNoteFetcher({ noteType: "markdown" });
+  const dispatch = useAppDispatch();
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
-    setText(newText);
+    // dispatch(setMarkDown(checkMarkDown(newText)));
+    dispatch(setText(newText));
 
     const mutationData: TNote = {
       content: newText,
@@ -22,7 +28,6 @@ export default function SimpleText() {
       isProtected: false,
       noteType: "markdown",
     };
-
     debouncedMutate(mutationData);
   };
 
@@ -49,6 +54,7 @@ export default function SimpleText() {
         placeholder="Enter Your text here..."
         onChange={handleTextChange}
       />
+      <MarkdownRenderer content={text} />
     </ActionWrappper>
   );
 }

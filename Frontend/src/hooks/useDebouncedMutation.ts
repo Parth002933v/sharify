@@ -21,7 +21,7 @@ export function useDebouncedMutation() {
                         toast({ description: err.message, variant: "destructive" });
                     }
                 });
-        }, 2000),
+        }, 1500),
         [addNote, toast]
     )
 

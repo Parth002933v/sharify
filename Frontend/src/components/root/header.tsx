@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
-    <header className="left-0 top-0 w-full bg-blue-500 p-4 text-white backdrop-blur-[8px]">
+    <header className="left-0 top-0 w-full bg-indigo-600 p-4 text-white backdrop-blur-[8px]">
       <div className="mx-auto flex items-center justify-between">
         <h1 className="container text-2xl font-bold">
           <Link to="/">Sharify</Link>

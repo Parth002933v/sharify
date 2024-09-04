@@ -5,7 +5,7 @@ type INote = Document & {
     hashID: string,
     content: string,
     noteType: "lexical" | "markdown"
-    owner: IUser,
+    owner: IUser["_id"],
     isProtected: boolean,
 }
 
