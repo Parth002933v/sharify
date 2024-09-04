@@ -308,25 +308,22 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import yellowFlowerImage from "./../../../../../public/images/yellow-flower.jpg";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import {
-  INSERT_IMAGE_COMMAND,
-  InsertImagePayload,
-} from "../customPlugins/ImagePlugin";
+// import {
+//   INSERT_IMAGE_COMMAND,
+//   InsertImagePayload,
+// } from "../customPlugins/ImagePlugin";
 
 function InsertImageDialog({
   isDialogOpne,
-  activeEditor,
   handleInsertImageDialogCancal,
-  onSelect,
 }: {
   activeEditor: LexicalEditor;
   onSelect: (eventType: EventType) => void;
   isDialogOpne: boolean;
   handleInsertImageDialogCancal: () => void;
 }) {
-  const onClick = (payload: InsertImagePayload) => {
-    activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
+  const onClick = (payload: any) => {
+    // activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
   };
   return (
     <AlertDialog open={isDialogOpne}>

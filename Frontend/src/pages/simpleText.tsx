@@ -9,11 +9,8 @@ import { TNote } from "@/features/note/notesAPI";
 import { setText } from "@/features/note/note-slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useNoteFetcher } from "@/hooks/useNoteFetcher";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
-import remarkgfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { markdownIt } from "@/common/MarkdownConfig";
+import MarkdownRenderer from "@/utils/MarkdownRender";
 
 export default function SimpleText() {
   const { debouncedMutate } = useDebouncedMutation();
@@ -64,7 +61,9 @@ export default function SimpleText() {
           />
         ) : (
           <div className="prose w-full max-w-[1100px] rounded-md px-6 py-7">
-            <ReactMarkdown
+            {/* {htmlContent} */}
+            <MarkdownRenderer content={text} />
+            {/* <ReactMarkdown
               rehypePlugins={[remarkgfm, rehypeRaw]}
               components={{
                 code(props) {
@@ -85,7 +84,7 @@ export default function SimpleText() {
               }}
             >
               {text}
-            </ReactMarkdown>
+            </ReactMarkdown> */}
           </div>
         )}
       </div>

@@ -58,7 +58,7 @@ const handleGetNoteByHashID = asyncHandler(async (req: Request<{ hashID: string 
 
     console.log(noteType);
 
-    const note = await NoteModel.findOne({ hashID: hashID, noteType: noteType ? noteType.toLowerCase() : "markdown" }).select("-_id -__v -updatedAt")
+    const note = await NoteModel.findOne({ hashID: hashID, noteType: noteType ? noteType.toLowerCase() : "markdown" }).select("-__v -updatedAt")
 
     if (!note) throw new CustomError({ message: "The note is not note awailable with this hashID", statusCode: 404 })
 
@@ -93,7 +93,7 @@ const handleCheckNoteExist = asyncHandler(async (req: Request<{}, {}, { hashID: 
 })
 
 
-const handlePublishNote = asyncHandler(async (req: Request<{}, {}, { hashID: string }>, res) => {
+const handlePublishNote = asyncHandler(async (req: Request<{}, {}, { id: string }>, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const errorMessage: string = errors.array().map(err => `${err.type}: ${err.msg}`).join("; ")
@@ -105,11 +105,11 @@ const handlePublishNote = asyncHandler(async (req: Request<{}, {}, { hashID: str
         });
     }
 
-    const { hashID } = req.body
+    const { id } = req.body
 
-    console.log(hashID);
+    console.log(id);
 
-    const note = await NoteModel.findOneAndUpdate({ hashID: hashID }, { isPublished: true }, { new: true })
+    const note = await NoteModel.findByIdAndUpdate(id, { isPublished: true }, { new: true })
 
     if (!note) {
         throw new CustomError({
@@ -118,7 +118,7 @@ const handlePublishNote = asyncHandler(async (req: Request<{}, {}, { hashID: str
         });
     }
 
-    const publishedURl = `${req.protocol}://${req.get('host')}/${note.hashID}`;
+    const publishedURl = `${req.protocol}://${req.get('host')}/${note._id}`;
 
     return SendResponse({
         res,

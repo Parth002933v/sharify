@@ -41,3 +41,16 @@ export const checkNoteHashIdValidator: ValidationChain[] = [
             return true;
         }),
 ]
+
+
+export const checkNoteIdValidator: ValidationChain[] = [
+    check("id")
+        .notEmpty().withMessage("The id field is required.")
+        .custom((value: string | undefined) => {
+
+            if (value && value.includes("#")) {
+                throw new Error('The hashID should not contain "#"');
+            }
+            return true;
+        }),
+]

@@ -10,7 +10,7 @@ import markdownItImplicitFigures from 'markdown-it-implicit-figures';
 import markdownItVideo from 'markdown-it-video';
 
 // @ts-ignore
-import markdownItImsize from 'markdown-it-imsize';
+// import markdownItImsize from 'markdown-it-imsize';
 
 // @ts-ignore
 import markdownItTaskLists from 'markdown-it-task-lists';
@@ -41,7 +41,7 @@ export const markdownIt = new MarkdownIt({
     })
     .use(markdownItHighlightJs)
     .use(markdownItTaskLists)
-    .use(markdownItImsize)
+    // .use(markdownItImsize)
     .use(markdownItFootnote)
     .use(markdownItVideo)
     .use(markdownItDeflist)
