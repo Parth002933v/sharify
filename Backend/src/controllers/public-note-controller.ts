@@ -8,6 +8,16 @@ import { createHeadlessEditor } from '@lexical/headless';
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html"
 import { LexicalNode } from "lexical";
 import { JSDOM } from "jsdom";
+import { getHtmlFromLexicalJSON } from "../config/LexicalConfig";
+
+import Renderer from "@tryghost/kg-lexical-html-renderer";
+
+
+import { AutoLinkNode, LinkNode } from "@lexical/link";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { CodeHighlightNode, CodeNode } from "@lexical/code";
+import { TableNode, TableCellNode, TableRowNode } from "@lexical/table";
+import { ListNode, ListItemNode } from "@lexical/list";
 
 export const handlGetPublishedNote = asyncHandler(async (req: Request<{ id: string }>, res) => {
 
@@ -24,7 +34,14 @@ export const handlGetPublishedNote = asyncHandler(async (req: Request<{ id: stri
     }
     else {
 
-        
+        const renderer = new Renderer({
+            nodes: []
+
+
+        });
+        const html = await renderer.render(JSON.parse(note.content));
+
+        return res.send(html)
     }
 
 })

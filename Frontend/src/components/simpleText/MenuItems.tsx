@@ -16,8 +16,9 @@ export function MenuItem({
   return (
     <div
       ref={ref}
-      className="my-2 flex h-12 w-full items-center justify-center gap-2 rounded-md border bg-white px-3 hover:cursor-pointer hover:bg-black/10"
+      className="my-2 flex h-12 w-full items-center justify-center gap-2 rounded-md border bg-white px-3 hover:cursor-pointer hover:bg-gray-100"
       onClick={onClick}
+      
     >
       <Icon />
       <p className="text-center text-sm">{text}</p>

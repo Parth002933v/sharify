@@ -5,7 +5,7 @@ import { useRef, useEffect } from "react";
 import { Textarea } from "../components/ui/textarea";
 import { useDebouncedMutation } from "@/hooks/useDebouncedMutation";
 import ActionWrappper from "@/common/ActionWrapper";
-import { TNote } from "@/features/note/notesAPI";
+import { TNote, usePublishNoteMutation } from "@/features/note/notesAPI";
 import { setText } from "@/features/note/note-slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useNoteFetcher } from "@/hooks/useNoteFetcher";
@@ -16,9 +16,10 @@ export default function SimpleText() {
   const { debouncedMutate } = useDebouncedMutation();
   const { text } = useNoteFetcher({ noteType: "markdown" });
 
+
   const dispatch = useAppDispatch();
   const currentEditorState = useAppSelector(
-    (state) => state.notekṅḥfds.currentEditorState,
+    (state) => state.simpleNote.currentEditorState,
   );
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

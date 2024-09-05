@@ -6,13 +6,24 @@ export type TNote = {
     content: string;
     noteType: "lexical" | "markdown";
     owner?: string;
-    isProtected: boolean;
+    isProtected?: boolean;
+    publishedURL?: string
 };
 
 type TNoteRespose = {
     statusCode: number,
     message: string,
     data: TNote
+}
+type TNotePublishedRespose = {
+    statusCode: number,
+    message: string,
+    data: {
+        "publishedURL": string,
+        "hashID": string,
+        "noteType": TNote["noteType"],
+        "isProtected": boolean,
+    }
 }
 
 type TFetchNoteProps = {
@@ -48,8 +59,17 @@ export const notesApi = createApi({
             }),
             providesTags: (_result, _error, id) => [{ type: 'Note', id: id }],
 
-        })
-    })
-});
+        }),
 
-export const { useCreateNoteMutation, useFetchNoteQuery, useCheckNoteExistQuery } = notesApi;
+        publishNote: builder.mutation<TNotePublishedRespose, { hashID: string, noteType: TNote["noteType"] }>({
+            query: (value) => ({
+                url: "api/note/publish/",
+                method: "PATCH",
+                body: value,
+            }),
+            invalidatesTags: [{ type: 'Note', id: 'LIST' }],
+        }),
+    })
+})
+
+export const { useCreateNoteMutation, useFetchNoteQuery, useCheckNoteExistQuery, usePublishNoteMutation } = notesApi;

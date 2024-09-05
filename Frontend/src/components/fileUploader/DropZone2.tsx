@@ -8,7 +8,7 @@ export default function DropZone2() {
   const [file, setFile] = useState<File | null>(null);
   const { toast } = useToast();
 
-  const [uploadFile, { isLoading, isError, isSuccess, data }] =
+  const [uploadFile, { isLoading, isSuccess, data }] =
     useUploadFileMutation();
 
   const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {

@@ -93,7 +93,7 @@ const handleCheckNoteExist = asyncHandler(async (req: Request<{}, {}, { hashID: 
 })
 
 
-const handlePublishNote = asyncHandler(async (req: Request<{}, {}, { id: string }>, res) => {
+const handlePublishNote = asyncHandler(async (req: Request<{}, {}, { hashID: string, noteType: string }>, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const errorMessage: string = errors.array().map(err => `${err.type}: ${err.msg}`).join("; ")
@@ -105,20 +105,22 @@ const handlePublishNote = asyncHandler(async (req: Request<{}, {}, { id: string 
         });
     }
 
-    const { id } = req.body
+    const { hashID, noteType } = req.body
 
-    console.log(id);
+    console.log(hashID);
 
-    const note = await NoteModel.findByIdAndUpdate(id, { isPublished: true }, { new: true })
+    const note = await NoteModel.findOne({ hashID: hashID, noteType: noteType })
 
     if (!note) {
         throw new CustomError({
-            message: "Something went wrong",
-            statusCode: 400,
+            message: "Note Not found. Please Check hashID and noteType if note exist",
+            statusCode: 404,
         });
     }
-
     const publishedURl = `${req.protocol}://${req.get('host')}/${note._id}`;
+
+    const updatedNote = await NoteModel.findByIdAndUpdate(note._id, { publishedUrl: publishedURl }, { new: true })
+
 
     return SendResponse({
         res,
@@ -129,7 +131,7 @@ const handlePublishNote = asyncHandler(async (req: Request<{}, {}, { id: string 
             hashID: note.hashID,
             noteType: note.noteType,
             isProtected: note.isProtected,
-            isPublished: note.isPublished
+            // isPublished: note.isPublished
         },
     });
 

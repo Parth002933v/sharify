@@ -1,19 +1,32 @@
-import { Earth, NotebookPen, Settings, SquareM } from "lucide-react";
+import { Earth, Globe, NotebookPen, Settings, SquareM } from "lucide-react";
 import { useRef, useState } from "react";
 import { MenuItem } from "./MenuItems";
 import { MutateLoader } from "./MutateLoader";
 import gsap from "gsap";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { toggleEditorState } from "@/features/note/note-slice";
+import { setPublishedURL, toggleEditorState } from "@/features/note/note-slice";
+import { usePublishNoteMutation } from "@/features/note/notesAPI";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function MenuBar() {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
-  const isMarkDown = useAppSelector((state) => state.notekṅḥfds.isMarkDown);
+  const { toast } = useToast();
+
+  const isMarkDown = useAppSelector((state) => state.simpleNote.isMarkDown);
   const currentEditorState = useAppSelector(
-    (state) => state.notekṅḥfds.currentEditorState,
+    (state) => state.simpleNote.currentEditorState,
   );
+  //   const isPublished = useAppSelector((state) => state.simpleNote.isPublished!);
+  const hashID = useAppSelector((state) => state.simpleNote.hashID!);
+  const noteType = useAppSelector((state) => state.simpleNote.noteType!);
+  const publishedURL = useAppSelector((state) => state.simpleNote.publishedURL);
+
+  const navigate = useNavigate();
+
+  const [publishNoteMutation, { isLoading }] = usePublishNoteMutation();
 
   const dispatch = useAppDispatch();
 
@@ -44,7 +57,36 @@ export default function MenuBar() {
           <></>
         )}
 
-        <MenuItem text="Publish as webPage" Icon={Earth} />
+        <MenuItem
+          text={
+            isLoading == true
+              ? "Publishing..."
+              : publishedURL
+                ? "Published Page ✅"
+                : "Publish as webPage"
+          }
+          Icon={publishedURL ? Globe : Earth}
+          onClick={async () => {
+            if (publishedURL) {
+              if (isLoading == false) {
+                await publishNoteMutation({
+                  hashID: hashID,
+                  noteType: noteType,
+                })
+                  .unwrap()
+                  .then((v) => {
+                    dispatch(setPublishedURL(v.data.publishedURL));
+                  })
+                  .catch((e) => {
+                    toast({ description: e, variant: "destructive" });
+                  });
+              }
+            } else {
+              console.log(publishedURL);
+              navigate(publishedURL!);
+            }
+          }}
+        />
         <MenuItem />
         <MenuItem />
         <MenuItem />

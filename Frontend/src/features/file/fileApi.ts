@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 
 
-interface UploadResponse {
+export interface UploadResponse {
     statusCode: number;
     message: string;
     data: {

@@ -43,9 +43,9 @@ export const checkNoteHashIdValidator: ValidationChain[] = [
 ]
 
 
-export const checkNoteIdValidator: ValidationChain[] = [
-    check("id")
-        .notEmpty().withMessage("The id field is required.")
+export const checkNoteIdAndTypeValidator: ValidationChain[] = [
+    check("hashID")
+        .notEmpty().withMessage("The hashID field is required.")
         .custom((value: string | undefined) => {
 
             if (value && value.includes("#")) {
@@ -53,4 +53,12 @@ export const checkNoteIdValidator: ValidationChain[] = [
             }
             return true;
         }),
+    check("noteType").custom((value: string) => {
+        const noteType = value.toLowerCase();
+        if (noteType !== "lexical" && noteType !== "markdown") {
+            throw new Error("The noteType must be either 'lexical' or 'markdown'.");
+        }
+        return true;
+    }).toLowerCase()
+        .optional(),
 ]

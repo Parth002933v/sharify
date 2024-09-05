@@ -1,8 +1,6 @@
-import { useNoteMutateLoader } from "@/context/loadingContext";
-import { RootState } from "@/store";
+// import { useNoteMutateLoader } from "@/context/loadingContext";
 import { useAppSelector } from "@/store/hooks";
 import { QueryStatus } from "@reduxjs/toolkit/query";
-import { Fragment } from "react";
 
 export const MutateLoader = () => {
   const mutations = useAppSelector((state) => state.notesApi.mutations);

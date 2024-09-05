@@ -68,8 +68,8 @@ export default function SimpleText() {
 
   return (
     <div className="relative flex flex-col flex-grow items-center justify-center h-full p-6 bg-gray-100">
-      <button 
-        onClick={toggleProtectText} 
+      <button
+        onClick={toggleProtectText}
         className="absolute top-4 right-4 px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700"
       >
         {isProtected ? 'Unprotect Text' : 'Protect Text'}
@@ -104,14 +104,14 @@ export default function SimpleText() {
                   />
                 </div>
                 <div className="flex justify-end space-x-2">
-                  <button 
-                    onClick={handleUnprotect} 
+                  <button
+                    onClick={handleUnprotect}
                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
                   >
                     Unprotect
                   </button>
-                  <button 
-                    onClick={handleCancel} 
+                  <button
+                    onClick={handleCancel}
                     className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
                   >
                     Cancel
@@ -144,14 +144,14 @@ export default function SimpleText() {
                   />
                 </div>
                 <div className="flex justify-end space-x-2">
-                  <button 
-                    onClick={handleSave} 
+                  <button
+                    onClick={handleSave}
                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
                   >
                     Save
                   </button>
-                  <button 
-                    onClick={handleCancel} 
+                  <button
+                    onClick={handleCancel}
                     className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
                   >
                     Cancel

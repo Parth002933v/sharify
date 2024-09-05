@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { checkNoteHashIdValidator, checkNoteIdValidator, createNoteValidator } from "../middlewares/note-moddleware";
+import { checkNoteHashIdValidator, checkNoteIdAndTypeValidator, createNoteValidator } from "../middlewares/note-moddleware";
 import { handleCheckNoteExist, handleCreateNote, handleGetNoteByHashID, handlePublishNote } from "../controllers/note-controller";
 
 const router = Router()
@@ -9,7 +9,7 @@ router.get("/:hashID/", handleGetNoteByHashID)
 router.post("/", createNoteValidator, handleCreateNote)
 
 // use id for patch
-router.patch("/publish/", checkNoteIdValidator, handlePublishNote)
+router.patch("/publish/", checkNoteIdAndTypeValidator, handlePublishNote)
 
 
 export default router
