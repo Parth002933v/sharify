@@ -7,6 +7,7 @@ export type INoteState = Partial<TNote> & {
     text: string
     currentEditorState: "markdown" | "editor"
     // publishedURL: string
+    encripterd?: string
 
 }
 
@@ -33,13 +34,16 @@ const simpleNoteSlice = createSlice({
 
         // },
         setPublishedURL: (state, action: PayloadAction<string | undefined>) => {
-            state.publishedURL = action.payload
+            state.publishedUrl = action.payload
         },
         setHashID: (state, action: PayloadAction<string>) => {
             state.hashID = action.payload
         },
         setNoteType: (state, action: PayloadAction<TNote["noteType"]>) => {
             state.noteType = action.payload
+        },
+        setEncripterd: (state, action: PayloadAction<string>) => {
+            state.encripterd = action.payload
         },
         toggleEditorState: (state) => {
             if (state.currentEditorState == "editor") {
@@ -51,6 +55,6 @@ const simpleNoteSlice = createSlice({
     }
 })
 
-export const { setMarkDown, setText, toggleEditorState, setHashID, setNoteType, setPublishedURL } = simpleNoteSlice.actions
+export const { setMarkDown, setText, toggleEditorState, setHashID, setNoteType, setPublishedURL,setEncripterd } = simpleNoteSlice.actions
 
 export const { name, reducer, reducerPath } = simpleNoteSlice

@@ -15,7 +15,7 @@ export const useNoteFetcher = ({ noteType }: { noteType: TNote['noteType'] }) =>
     useEffect(() => {
         if (note) {
             dispatch(setText(note.data.content));
-            dispatch(setPublishedURL(note.data.publishedURL));
+            dispatch(setPublishedURL(note.data.publishedUrl));
             dispatch(setHashID(note.data.hashID || ""));
             dispatch(setNoteType(note.data.noteType || "markdown"));
         }

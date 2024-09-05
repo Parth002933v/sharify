@@ -7,7 +7,7 @@ export type TNote = {
     noteType: "lexical" | "markdown";
     owner?: string;
     isProtected?: boolean;
-    publishedURL?: string
+    publishedUrl?: string
 };
 
 type TNoteRespose = {

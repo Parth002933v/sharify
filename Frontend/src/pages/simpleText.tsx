@@ -5,17 +5,15 @@ import { useRef, useEffect } from "react";
 import { Textarea } from "../components/ui/textarea";
 import { useDebouncedMutation } from "@/hooks/useDebouncedMutation";
 import ActionWrappper from "@/common/ActionWrapper";
-import { TNote, usePublishNoteMutation } from "@/features/note/notesAPI";
+import { TNote } from "@/features/note/notesAPI";
 import { setText } from "@/features/note/note-slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useNoteFetcher } from "@/hooks/useNoteFetcher";
-import { markdownIt } from "@/common/MarkdownConfig";
 import MarkdownRenderer from "@/utils/MarkdownRender";
 
 export default function SimpleText() {
   const { debouncedMutate } = useDebouncedMutation();
   const { text } = useNoteFetcher({ noteType: "markdown" });
-
 
   const dispatch = useAppDispatch();
   const currentEditorState = useAppSelector(

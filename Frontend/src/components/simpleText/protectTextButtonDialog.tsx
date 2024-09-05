@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -14,6 +14,8 @@ import {
 } from "@radix-ui/react-alert-dialog";
 import { Button } from "../ui/button";
 import { Lock } from "lucide-react";
+import { useAppDispatch } from "@/store/hooks";
+import { setEncripterd } from "@/features/note/note-slice";
 
 export function ProtectTextButtonDialog({
   text,
@@ -24,6 +26,20 @@ export function ProtectTextButtonDialog({
   messageDialog: boolean;
   setMessageDialog: Dispatch<SetStateAction<boolean>>;
 }) {
+  const dispatch = useAppDispatch();
+
+  const passwordred = useRef<HTMLInputElement>(null);
+  const conPasswordred = useRef<HTMLInputElement>(null);
+  const handleSave = () => {
+    if (
+      passwordred.current &&
+      conPasswordred.current &&
+      passwordred.current?.value == conPasswordred.current?.value
+    ) {
+      dispatch(setEncripterd(passwordred.current.value));
+    }
+  };
+
   return (
     <AlertDialog
       open={messageDialog}
@@ -45,7 +61,7 @@ export function ProtectTextButtonDialog({
         </AlertDialogHeader>
 
         <AlertDialogDescription>
-          <p className="mb-4">
+          <p className="mb-4 text-red-800">
             Make sure to remember the password. We don't store passwords, just
             the encrypted data. (If the password is forgotten, the data can't be
             accessed.) Longer passwords are more secure.
@@ -54,6 +70,7 @@ export function ProtectTextButtonDialog({
             <label className="mb-1 block">Enter Password</label>
             <input
               type="password"
+              ref={passwordred}
               className="w-full rounded border border-gray-300 p-2"
               // value={password}
               // onChange={(e) => setPassword(e.target.value)}
@@ -63,6 +80,7 @@ export function ProtectTextButtonDialog({
             <label className="mb-1 block">Confirm Password</label>
             <input
               type="password"
+              ref={conPasswordred}
               className="w-full rounded border border-gray-300 p-2"
               // value={confirmPassword}
               // onChange={(e) => setConfirmPassword(e.target.value)}
@@ -71,8 +89,8 @@ export function ProtectTextButtonDialog({
         </AlertDialogDescription>
 
         <AlertDialogFooter>
-          <AlertDialogAction>
-            <Button variant={"default"} className="px-4">
+          <AlertDialogAction asChild>
+            <Button variant={"default"} className="px-4" onClick={handleSave}>
               Save
             </Button>
           </AlertDialogAction>
