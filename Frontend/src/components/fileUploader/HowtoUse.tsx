@@ -1,5 +1,12 @@
 import React from "react";
 
+import cloud from "../Assets/cloud.jpeg";
+import secureImg from "../assets/securImg.jpg";
+import filUpload from "@/Assets/fileUpload.jpg";
+import shareLink from "../Assets/shareLink.jpg";
+import easy from "../Assets/easy.jpg";
+import link from "@/Assets/file-upload.png";
+
 export default function HowtoUse() {
   return (
     <section className="mt-12 w-4/5 rounded-lg bg-white p-8 shadow-md">
@@ -16,9 +23,9 @@ export default function HowtoUse() {
             explorer and choose a file from your device.
           </p>
           <img
-            src="https://via.placeholder.com/300x150"
+            src={filUpload}
             alt="Upload Files"
-            className="w-300 h-150 mx-auto mt-4 object-cover shadow-lg"
+            className="mx-auto mt-4 h-auto w-full rounded-lg object-cover shadow-lg"
           />
         </div>
         {/* Part 2 of Usage */}
@@ -31,10 +38,11 @@ export default function HowtoUse() {
             link. You can copy the link and share it with anyone to allow them
             access to the file.
           </p>
+          <br />
           <img
-            src="https://via.placeholder.com/300x150"
+            src={link}
             alt="Generate Link"
-            className="w-300 h-150 mx-auto mt-4 object-cover shadow-lg"
+            className="mx-auto mt-4 h-auto w-full rounded-lg object-cover shadow-lg"
           />
         </div>
       </div>

@@ -6,6 +6,6 @@
     "scripts": {
         "start": "concurrently \"pnpm run start:frontend\" \"npm run start:backend\"",
         "start:frontend": "cd Frontend && pnpm run dev",
-        "start:backend": "cd Backend && pnpm run dev"
+        "start:backend": "cd Backend && pnpm run prod"
     }
 }

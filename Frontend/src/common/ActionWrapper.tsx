@@ -16,12 +16,12 @@ export default function ActionWrappper(prop: ActionWrappperProp) {
       <MenuBar />
 
       {/* Protect Text Button */}
-      <div className="mx-[calc(100vw-13rem)] flex flex-col">
-        <ProtectTextButtonDialog
+      <div className="mx-[calc(100vw-13rem)] flex flex-col h-5">
+        {/* <ProtectTextButtonDialog
           text={`${isProtected ? "Unprotect Text" : "Protect Text"}`}
           messageDialog={messageDialog}
           setMessageDialog={setMessageDialog}
-        />
+        /> */}
       </div>
 
       {/* Children */}

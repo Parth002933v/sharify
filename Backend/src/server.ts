@@ -4,7 +4,7 @@ import noteRouter from "./routes/note-routes";
 import publishedNoteRouter from "./routes/published-note-routes";
 import { globalErrorHandler } from "./middlewares/error-handler-middleware";
 import cors from "cors"
-import router from "./routes/file-route";
+import uploadAndDownloadRouter from "./routes/file-route";
 import { handlGetPublishedNote } from "./controllers/public-note-controller";
 
 const app: Application = express()
@@ -20,7 +20,7 @@ app.use(express.static("public"))
 
 //routes
 app.use("/", publishedNoteRouter)
-app.use("/api/", router)
+app.use("/api/", uploadAndDownloadRouter)
 app.use("/api/health", healthRouter)
 app.use("/api/note/", noteRouter)
 

@@ -46,6 +46,7 @@ const handleFileUpload = asyncHandler(async (req, res) => {
     }
 
     // console.log(result, "result");
+    // localhost:3000/api/file/1J90isx6mMYCIdSQJkzrwJtdZgFUqheq7
     const URl = `${req.protocol}://${req.get('host')}/api/file/${result?.data.id}`;
 
     const fileMetadata = await FileMetadataModel.create({

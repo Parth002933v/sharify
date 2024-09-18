@@ -15,6 +15,7 @@ import {
   UPLOAD_FILE_PATH,
 } from "@/common/routeConstant";
 import FileUploader from "@/pages/FileUploader";
+import FAQ from "@/pages/FAQItem";
 
 export const RoutesTSX: RouterProviderProps = {
   router: createBrowserRouter(
@@ -22,6 +23,7 @@ export const RoutesTSX: RouterProviderProps = {
       <Route path={HOME_PATH} element={<Root />}>
         <Route index element={<Index />} />
         <Route path={RICHTEXT_PATH} element={<RichText />} />
+        <Route path="/faq" element={<FAQ />} />,
       </Route>,
       <Route path={HOME_PATH} element={<Uploaderlayout />}>
         <Route path={UPLOAD_FILE_PATH} element={<FileUploader />} />
