@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { EventType, pluginsList } from "./toolbarIconsList";
+import { pluginsList, TPluginsList } from "./toolbarIconsList";
 import useOnClickListner from "./useOnClickListner";
 import {
   Tooltip,
@@ -14,6 +14,7 @@ import {
   $getSelection,
   $isRangeSelection,
   BaseSelection,
+  EditorState,
   LexicalEditor,
   SELECTION_CHANGE_COMMAND,
 } from "lexical";
@@ -27,7 +28,7 @@ export default function ToolBar() {
   const { onClick, blockType, editor, isLink, selectedEventTypes } =
     useOnClickListner();
 
-  const isIconSelected = (plugin: any) =>
+  const isIconSelected = (plugin: TPluginsList) =>
     selectedEventTypes.includes(plugin.event) ||
     blockType.includes(plugin.event);
 
@@ -46,13 +47,14 @@ export default function ToolBar() {
               {/* main component */}
 
               {plugin.event == "insertImage" ? (
-                <ImageOptionDropdown
-                  activeEditor={editor}
-                  onSelect={(eventType) => {
-                    onClick(eventType);
-                  }}
-                />
+                <></>
               ) : (
+                // <ImageOptionDropdown
+                //   activeEditor={editor}
+                //   onSelect={(eventType) => {
+                //     onClick(eventType);
+                //   }}
+                // />
                 <div
                   key={plugin.id}
                   className={`${isIconSelected(plugin) ? "bg-[#eee] text-black" : "text-gray-600"} cursor-pointer rounded-lg p-2 hover:bg-[#eee]`}
@@ -88,7 +90,7 @@ function positionEditorElement(editor: HTMLDivElement, rect: DOMRect | null) {
   }
 }
 
-function FloatingLinkEditor({ editor }: { editor: any }) {
+function FloatingLinkEditor({ editor }: { editor: LexicalEditor }) {
   const editorRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const mouseDownRef = useRef(false);
@@ -130,7 +132,7 @@ function FloatingLinkEditor({ editor }: { editor: any }) {
       let rect: DOMRect;
       if (nativeSelection!.anchorNode === rootElement) {
         //! may be null
-        let inner = rootElement;
+        let inner: Element = rootElement;
         while (inner.firstElementChild != null) {
           inner = inner.firstElementChild;
         }
@@ -155,11 +157,13 @@ function FloatingLinkEditor({ editor }: { editor: any }) {
 
   useEffect(() => {
     return mergeRegister(
-      editor.registerUpdateListener(({ editorState }: { editorState: any }) => {
-        editorState.read(() => {
-          updateLinkEditor();
-        });
-      }),
+      editor.registerUpdateListener(
+        ({ editorState }: { editorState: EditorState }) => {
+          editorState.read(() => {
+            updateLinkEditor();
+          });
+        },
+      ),
 
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
@@ -234,135 +238,119 @@ function FloatingLinkEditor({ editor }: { editor: any }) {
   );
 }
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { ChevronDown, FileImage, SquareX } from "lucide-react";
-function ImageOptionDropdown({
-  onSelect,
-  activeEditor,
-}: {
-  activeEditor: LexicalEditor;
-  onSelect: (eventType: EventType) => void;
-}) {
-  //   const [editor] = useLexicalComposerContext();
-
-  const [isOpen, setOpen] = useState(false);
-  const [isDialogOpne, setDialogOpne] = useState(false);
-
-  const handleInsertImageDialogCancal = () => setDialogOpne(false);
-  return (
-    <>
-      <DropdownMenu
-        open={isOpen}
-        onOpenChange={(e) => {
-          setOpen(e);
-        }}
-      >
-        <DropdownMenuTrigger asChild className="flex">
-          <Button className="gap-3 bg-white text-gray-600 shadow-none hover:bg-[#eee]">
-            Insert Image
-            <ChevronDown
-              size={20}
-              className={`${isOpen ? "rotate-180" : "rotate-0"} transition`}
-            />
-          </Button>
-        </DropdownMenuTrigger>
-
-        <DropdownMenuContent className="text-gray-600">
-          <DropdownMenuItem
-            onClick={() => setDialogOpne(true)}
-            className="gap-3 hover:cursor-pointer"
-          >
-            <FileImage size={20} color="#4b5563" /> Image
-          </DropdownMenuItem>
-
-          <DropdownMenuItem className="gap-3 hover:cursor-pointer">
-            <FileImage size={20} color="#4b5563" />
-            Inline Image
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <InsertImageDialog
-        activeEditor={activeEditor}
-        onSelect={(eventType: EventType) => {
-          onSelect(eventType);
-        }}
-        isDialogOpne={isDialogOpne}
-        handleInsertImageDialogCancal={handleInsertImageDialogCancal}
-      />
-    </>
-  );
-}
-
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import yellowFlowerImage from "./../../../../../public/images/yellow-flower.jpg";
-// import {
-//   INSERT_IMAGE_COMMAND,
-//   InsertImagePayload,
-// } from "../customPlugins/ImagePlugin";
-
-function InsertImageDialog({
-  isDialogOpne,
-  handleInsertImageDialogCancal,
-}: {
-  activeEditor: LexicalEditor;
-  onSelect: (eventType: EventType) => void;
-  isDialogOpne: boolean;
-  handleInsertImageDialogCancal: () => void;
-}) {
-  const onClick = (payload: any) => {
-    // activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
-  };
-  return (
-    <AlertDialog open={isDialogOpne}>
-      <AlertDialogContent className="w-1/4">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="flex justify-between text-2xl font-bold text-[#4b5563]">
-            Insert Image
-            <Button
-              onClick={() => handleInsertImageDialogCancal()}
-              className="h-min w-min p-0"
-              variant={"ghost"}
-            >
-              <SquareX className="hover:cursor-pointer" color="#4b5563" />
-            </Button>
-          </AlertDialogTitle>
-
-          <div className="h-[1px] bg-[#4b5563]" />
-
-          <AlertDialogDescription className="flex flex-col gap-5 py-7">
-            <Button
-              onClick={() =>
-                onClick({
-                  src: yellowFlowerImage,
-                  altText: "Yellow flower in tilt shift lens",
-                })
-              }
-              className="bg-black/10 text-black hover:bg-black/20"
-            >
-              Sample
-            </Button>
-            <Button className="bg-black/10 text-black hover:bg-black/20">
-              URL
-            </Button>
-            <Button className="bg-black/10 text-black hover:bg-black/20">
-              File
-            </Button>
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
+// function ImageOptionDropdown({
+//   onSelect,
+//   activeEditor,
+// }: {
+//   activeEditor: LexicalEditor;
+//   onSelect: (eventType: EventType) => void;
+// }) {
+//   //   const [editor] = useLexicalComposerContext();
+//
+//   const [isOpen, setOpen] = useState(false);
+//   const [isDialogOpne, setDialogOpne] = useState(false);
+//
+//   const handleInsertImageDialogCancal = () => setDialogOpne(false);
+//   return (
+//     <>
+//       <DropdownMenu
+//         open={isOpen}
+//         onOpenChange={(e) => {
+//           setOpen(e);
+//         }}
+//       >
+//         <DropdownMenuTrigger asChild className="flex">
+//           <Button className="gap-3 bg-white text-gray-600 shadow-none hover:bg-[#eee]">
+//             Insert Image
+//             <ChevronDown
+//               size={20}
+//               className={`${isOpen ? "rotate-180" : "rotate-0"} transition`}
+//             />
+//           </Button>
+//         </DropdownMenuTrigger>
+//
+//         <DropdownMenuContent className="text-gray-600">
+//           <DropdownMenuItem
+//             onClick={() => setDialogOpne(true)}
+//             className="gap-3 hover:cursor-pointer"
+//           >
+//             <FileImage size={20} color="#4b5563" /> Image
+//           </DropdownMenuItem>
+//
+//           <DropdownMenuItem className="gap-3 hover:cursor-pointer">
+//             <FileImage size={20} color="#4b5563" />
+//             Inline Image
+//           </DropdownMenuItem>
+//         </DropdownMenuContent>
+//       </DropdownMenu>
+//
+//       <InsertImageDialog
+//         activeEditor={activeEditor}
+//         onSelect={(eventType: EventType) => {
+//           onSelect(eventType);
+//         }}
+//         isDialogOpne={isDialogOpne}
+//         handleInsertImageDialogCancal={handleInsertImageDialogCancal}
+//       />
+//     </>
+//   );
+// }
+//
+// // import {
+// //   INSERT_IMAGE_COMMAND,
+// //   InsertImagePayload,
+// // } from "../customPlugins/ImagePlugin";
+//
+// function InsertImageDialog({
+//   isDialogOpne,
+//   handleInsertImageDialogCancal,
+// }: {
+//   activeEditor: LexicalEditor;
+//   onSelect: (eventType: EventType) => void;
+//   isDialogOpne: boolean;
+//   handleInsertImageDialogCancal: () => void;
+// }) {
+//   const onClick = (payload: any) => {
+//     // activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
+//   };
+//   return (
+//     <AlertDialog open={isDialogOpne}>
+//       <AlertDialogContent className="w-1/4">
+//         <AlertDialogHeader>
+//           <AlertDialogTitle className="flex justify-between text-2xl font-bold text-[#4b5563]">
+//             Insert Image
+//             <Button
+//               onClick={() => handleInsertImageDialogCancal()}
+//               className="h-min w-min p-0"
+//               variant={"ghost"}
+//             >
+//               <SquareX className="hover:cursor-pointer" color="#4b5563" />
+//             </Button>
+//           </AlertDialogTitle>
+//
+//           <div className="h-[1px] bg-[#4b5563]" />
+//
+//           <AlertDialogDescription className="flex flex-col gap-5 py-7">
+//             <Button
+//               onClick={() =>
+//                 onClick({
+//                   src: yellowFlowerImage,
+//                   altText: "Yellow flower in tilt shift lens",
+//                 })
+//               }
+//               className="bg-black/10 text-black hover:bg-black/20"
+//             >
+//               Sample
+//             </Button>
+//             <Button className="bg-black/10 text-black hover:bg-black/20">
+//               URL
+//             </Button>
+//             <Button className="bg-black/10 text-black hover:bg-black/20">
+//               File
+//             </Button>
+//           </AlertDialogDescription>
+//         </AlertDialogHeader>
+//       </AlertDialogContent>
+//     </AlertDialog>
+//   );
+// }

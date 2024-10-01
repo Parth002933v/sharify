@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import richImg from "../Assets/richText.png";
 import plainText from "../Assets/plainText.jpeg";
 import fileUpload from "../Assets/file-upload.png";
+import { RICHTEXT_PATH, UPLOAD_FILE_PATH } from "@/common/routeConstant.ts";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { generateAndSetHash } = useHashID();
 
   return (
-    <div className="mt-16 flex min-h-screen flex-col bg-gradient-to-r from-blue-50 via-purple-100 to-indigo-200 text-gray-800">
+    <div className="flex min-h-screen flex-col bg-gradient-to-r from-blue-50 via-purple-100 to-indigo-200 text-gray-800">
       <main className="flex flex-grow flex-col items-center justify-center p-8">
         <h1 className="mb-8 text-center text-6xl font-extrabold text-gray-900">
           Welcome to <span className="text-teal-600">Sharify</span>!
@@ -63,7 +64,7 @@ export default function Dashboard() {
               <Button
                 variant="default"
                 className="transform rounded-full bg-green-500 px-6 py-2 text-white transition-transform hover:scale-105 hover:bg-green-600"
-                onClick={() => navigate("/rich")}
+                onClick={() => navigate(RICHTEXT_PATH)}
               >
                 Get Started
               </Button>
@@ -88,7 +89,7 @@ export default function Dashboard() {
               <Button
                 variant="default"
                 className="transform rounded-full bg-purple-500 px-6 py-2 text-white transition-transform hover:scale-105 hover:bg-purple-600"
-                onClick={() => navigate("/upload")}
+                onClick={() => navigate(UPLOAD_FILE_PATH)}
               >
                 Get Started
               </Button>

@@ -1,14 +1,13 @@
 import Benefits from "@/components/fileUploader/Benefits";
 import HowtoUse from "@/components/fileUploader/HowtoUse";
-import React, { useState } from "react";
-// import DropZone from "@/components/fileUploader/DropZone
+// import {useState} from "react";
 import DropZone2 from "@/components/fileUploader/DropZone2";
 
 export default function FileUploader() {
-  const [file, setFile] = useState(null);
+  // const [file, setFile] = useState(null);
 
   return (
-    <main className="justify-center py-12 flex flex-col items-center bg-gradient-to-r from-blue-50 via-purple-100 to-indigo-200 pt-3">
+    <main className="flex flex-col items-center justify-center bg-gradient-to-r from-blue-50 via-purple-100 to-indigo-200 py-12 pt-3">
       {/* Drop Zone Section with Background Image */}
       <div className="relative flex w-full flex-col items-center">
         <div className="relative flex w-full items-center justify-center">

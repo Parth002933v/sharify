@@ -1,10 +1,7 @@
-import React from "react";
-
 import cloud from "@/Assets/cloud.jpeg";
 import secureImg from "@/Assets/securImg.jpg";
 import shareLink from "@/Assets/shareLink.jpg";
 import easy from "@/Assets/easy.jpg";
-import link from "@/Assets/file-upload.png";
 
 export default function Benefits() {
   return (

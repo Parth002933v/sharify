@@ -3,7 +3,6 @@ import { generateRandomHash } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 /**
  * The useHashID hook manages the generation and handling of a unique hash ID in a React application.
  * It ensures that a random hash is generated and set if the current URL doesn't have one.
@@ -15,27 +14,28 @@ import { useNavigate } from "react-router-dom";
  * - hashID: The current hash ID, or null if not yet generated.
  */
 export function useHashID() {
-    const [hashID, setHashID] = useState<string | null>(null);
-    const navigate = useNavigate();
+  const [hashID, setHashID] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-    const { data, error, isFetching } = useCheckNoteExistQuery(hashID!, {
-        skip: !hashID,
-    });
+  const { data, error, isFetching } = useCheckNoteExistQuery(hashID!, {
+    skip: !hashID,
+  });
 
-    const generateAndSetHash = () => {
-        const newHash = generateRandomHash();
-        setHashID(newHash);
-    };
+  const generateAndSetHash = () => {
+    const newHash = generateRandomHash();
+    setHashID(newHash);
+  };
 
-    useEffect(() => {
-        if (hashID && !isFetching) {
-            if (data?.statusCode === 200) {
-                generateAndSetHash();
-            } else {
-                navigate({ hash: hashID });
-            }
-        }
-    }, [data, error, hashID, isFetching, navigate]);
+  useEffect(() => {
+    if (hashID && !isFetching) {
+      if (data?.statusCode === 200) {
+        generateAndSetHash();
+      } else {
+        navigate({ hash: hashID });
+        navigate(0);
+      }
+    }
+  }, [data, error, hashID, isFetching, navigate]);
 
-    return { generateAndSetHash, hashID };
+  return { generateAndSetHash, hashID };
 }

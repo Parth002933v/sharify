@@ -6,135 +6,187 @@ import CustomError from "../utils/error-object";
 import { Request, Response } from "express";
 
 type HandleCreateNoteReqType = {
-    hashID: string;
-    content: string;
-    noteType: "lexical" | "markdown";
-    owner: string;
-    isProtected: boolean;
+  hashID: string;
+  content: string;
+  noteType: "lexical" | "markdown";
+  owner: string;
+  isProtected: boolean;
 };
 
-const handleCreateNote = asyncHandler(async (req: Request<{}, {}, HandleCreateNoteReqType>, res) => {
-
+const handleCreateNote = asyncHandler(
+  async (req: Request<{}, {}, HandleCreateNoteReqType>, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-
-        const errorMessage: string = errors.array().map(err => `${err.type}: ${err.msg}`).join("; ")
-        throw new CustomError({
-            message: `Validation failed: ${errorMessage}`,
-            statusCode: 400,
-        });
+      const errorMessage: string = errors
+        .array()
+        .map((err) => `${err.type}: ${err.msg}`)
+        .join("; ");
+      throw new CustomError({
+        message: `Validation failed: ${errorMessage}`,
+        statusCode: 400,
+      });
     }
 
     const { hashID, content, noteType, owner, isProtected } = req.body;
 
     let note = await NoteModel.findOneAndUpdate(
-        { hashID },
-        { content, noteType, isProtected, owner },
-        { new: true, upsert: true }
+      { hashID },
+      { content, noteType, isProtected, owner },
+      { new: true, upsert: true },
     );
 
     if (!note) {
-        throw new CustomError({
-            message: "Something went wrong",
-            statusCode: 400,
-        });
+      throw new CustomError({
+        message: "Something went wrong",
+        statusCode: 400,
+      });
     }
 
     return SendResponse({
-        res,
-        message: "Note Created Successfully!",
-        statusCode: 200,
-        data: {
-            hashID: note.hashID,
-            noteType: note.noteType,
-            isProtected: note.isProtected,
-        },
+      res,
+      message: "Note Created Successfully!",
+      statusCode: 200,
+      data: {
+        hashID: note.hashID,
+        noteType: note.noteType,
+        isProtected: note.isProtected,
+      },
     });
-});
+  },
+);
 
-const handleGetNoteByHashID = asyncHandler(async (req: Request<{ hashID: string }, {}, {}, { noteType: string }>, res: Response) => {
-    const { hashID } = req.params
-    const { noteType } = req.query
+const handleGetNoteByHashID = asyncHandler(
+  async (
+    req: Request<
+      { hashID: string },
+      {},
+      {},
+      {
+        noteType: string;
+      }
+    >,
+    res: Response,
+  ) => {
+    const { hashID } = req.params;
+    const { noteType } = req.query;
 
     console.log(noteType);
 
-    const note = await NoteModel.findOne({ hashID: hashID, noteType: noteType ? noteType.toLowerCase() : "markdown" }).select("-__v -updatedAt")
+    const note = await NoteModel.findOne({
+      hashID: hashID,
+      noteType: noteType ? noteType.toLowerCase() : "markdown",
+    }).select("-__v -updatedAt");
 
-    if (!note) throw new CustomError({ message: "The note is not note awailable with this hashID", statusCode: 404 })
+    if (!note)
+      throw new CustomError({
+        message: "The note is not note awailable with this hashID",
+        statusCode: 404,
+      });
 
     return SendResponse({
-        res,
-        statusCode: 200,
-        message: "got the note",
-        data: note
-    })
-});
+      res,
+      statusCode: 200,
+      message: "got the note",
+      data: note,
+    });
+  },
+);
 
-
-const handleCheckNoteExist = asyncHandler(async (req: Request<{}, {}, { hashID: string }>, res) => {
+const handleCheckNoteExist = asyncHandler(
+  async (req: Request<{}, {}, { hashID: string }>, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        const errorMessage: string = errors.array().map(err => `${err.type}: ${err.msg}`).join("; ")
-        console.log(errorMessage);
+      const errorMessage: string = errors
+        .array()
+        .map((err) => `${err.type}: ${err.msg}`)
+        .join("; ");
+      console.log(errorMessage);
 
-        throw new CustomError({
-            message: `Validation failed: ${errorMessage}`,
-            statusCode: 400,
-        });
+      throw new CustomError({
+        message: `Validation failed: ${errorMessage}`,
+        statusCode: 400,
+      });
     }
 
-    const { hashID } = req.body
-    const result = await NoteModel.exists({ hashID: hashID.toString() })
+    const { hashID } = req.body;
+    const result = await NoteModel.exists({ hashID: hashID.toString() });
     if (!result) {
-        return SendResponse({ res, statusCode: 404, message: "No content is awailable with this hashID" })
+      return SendResponse({
+        res,
+        statusCode: 404,
+        message: "No content is awailable with this hashID",
+      });
     } else {
-        return SendResponse({ res, statusCode: 200, message: "Got the content" })
+      return SendResponse({ res, statusCode: 200, message: "Got the content" });
     }
-})
+  },
+);
 
-
-const handlePublishNote = asyncHandler(async (req: Request<{}, {}, { hashID: string, noteType: string }>, res) => {
+const handlePublishNote = asyncHandler(
+  async (req: Request<{}, {}, { hashID: string; noteType: string }>, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        const errorMessage: string = errors.array().map(err => `${err.type}: ${err.msg}`).join("; ")
-        console.log(errorMessage);
+      const errorMessage: string = errors
+        .array()
+        .map((err) => `${err.type}: ${err.msg}`)
+        .join("; ");
+      console.log(errorMessage);
 
-        throw new CustomError({
-            message: `Validation failed: ${errorMessage}`,
-            statusCode: 400,
-        });
+      throw new CustomError({
+        message: `Validation failed: ${errorMessage}`,
+        statusCode: 400,
+      });
     }
 
-    const { hashID, noteType } = req.body
+    const { hashID, noteType } = req.body;
 
     console.log(hashID);
 
-    const note = await NoteModel.findOne({ hashID: hashID, noteType: noteType })
-
-    if (!note) {
-        throw new CustomError({
-            message: "Note Not found. Please Check hashID and noteType if note exist",
-            statusCode: 404,
-        });
-    }
-    const publishedURl = `${req.protocol}://${req.get('host')}/${note._id}`;
-
-    const updatedNote = await NoteModel.findByIdAndUpdate(note._id, { publishedUrl: publishedURl }, { new: true })
-
-
-    return SendResponse({
-        res,
-        message: "Note Published Successfully!",
-        statusCode: 200,
-        data: {
-            publishedURL: publishedURl,
-            hashID: note.hashID,
-            noteType: note.noteType,
-            isProtected: note.isProtected,
-            // isPublished: note.isPublished
-        },
+    const note = await NoteModel.findOne({
+      hashID: hashID,
+      noteType: noteType,
     });
 
-})
+    if (!note) {
+      throw new CustomError({
+        message:
+          "Note Not found. Please Check hashID and noteType if note exist",
+        statusCode: 404,
+      });
+    }
+    const publishedURl = `${req.protocol}://${req.get("host")}/${note._id}`;
+    await NoteModel.findByIdAndUpdate(
+      note._id,
+      { publishedUrl: publishedURl },
+      { new: true },
+    );
+    return SendResponse({
+      res,
+      message: "Note Published Successfully!",
+      statusCode: 200,
+      data: {
+        publishedURL: publishedURl,
+        hashID: note.hashID,
+        noteType: note.noteType,
+        isProtected: note.isProtected,
+      },
+    });
+  },
+);
 
-export { handleCreateNote, handleGetNoteByHashID, handleCheckNoteExist, handlePublishNote };
+const handleDeleteOldNotesFromDatabase = async (duration: Date) => {
+  const result = await NoteModel.deleteMany({
+    createdAt: { $lt: duration },
+  });
+  console.log(`Deleted ${result.deletedCount} old records from MongoDB.`);
+};
+
+export {
+  handleCreateNote,
+  handleGetNoteByHashID,
+  handleCheckNoteExist,
+  handlePublishNote,
+
+  // cron
+  handleDeleteOldNotesFromDatabase,
+};

@@ -43,10 +43,13 @@
 //   );
 // }
 
-import React from "react";
+import { RICHTEXT_PATH, UPLOAD_FILE_PATH } from "@/common/routeConstant";
 import { Link } from "react-router-dom";
+import { useHashID } from "@/hooks/useHashID.ts";
 
 export default function Header() {
+  const { generateAndSetHash } = useHashID();
+
   return (
     <header className="left-0 top-0 w-full bg-gradient-to-r from-blue-400 to-indigo-700 p-4 text-black backdrop-blur-[8px]">
       <div className="mx-auto flex items-center justify-between">
@@ -59,14 +62,21 @@ export default function Header() {
 
         {/* Navigation */}
         <nav className="space-x-6 text-lg font-medium">
-          <Link to="/" className="transition-colors hover:text-blue-500">
+          <Link
+            to="#"
+            onClick={() => generateAndSetHash()}
+            className="transition-colors hover:text-blue-500"
+          >
             Plain Text Editor
           </Link>
-          <Link to="/rich" className="transition-colors hover:text-green-500">
+          <Link
+            to={RICHTEXT_PATH}
+            className="transition-colors hover:text-green-500"
+          >
             Rich Text Editor
           </Link>
           <Link
-            to="/file-upload"
+            to={UPLOAD_FILE_PATH}
             className="transition-colors hover:text-purple-500"
           >
             File Upload
@@ -83,4 +93,3 @@ export default function Header() {
     </header>
   );
 }
-    

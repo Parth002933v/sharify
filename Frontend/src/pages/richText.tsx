@@ -7,14 +7,19 @@ import { useNoteFetcher } from "@/hooks/useNoteFetcher";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { setText } from "@/features/note/note-slice";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { encrypt } from "@/lib/encryptionAndDecyption.ts";
 
 export default function RichText() {
   const location = useLocation();
   const { generateAndSetHash } = useHashID();
   const { text } = useNoteFetcher({ noteType: "lexical" });
   const { debouncedMutate } = useDebouncedMutation();
+
   const dispatch = useAppDispatch();
+  const encryptedPassword = useAppSelector(
+    (state) => state.simpleNote.encrypted,
+  );
 
   //* Handle redirection if hash not found in URL
   useEffect(() => {
@@ -23,15 +28,14 @@ export default function RichText() {
     }
   }, [location.hash]);
 
-  const handleTextChange = (editorState: string) => {
-    console.log(handleTextChange);
+  const handleTextChange = async (editorState: string) => {
+    const encryptedText = await encrypt(editorState, encryptedPassword);
     dispatch(setText(editorState));
 
     const mutationData: TNote = {
-      content: editorState,
+      content: encryptedText,
       hashID: location.hash.replace("#", ""),
-      isProtected: false,
-
+      isProtected: !!encryptedPassword,
       noteType: "lexical",
     };
     debouncedMutate(mutationData);

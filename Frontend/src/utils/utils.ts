@@ -10,3 +10,5 @@ export const isMarkdown = (text: string) => {
     const markdownRegex = /[#*>\-`]|!\[|\[(.*?)\]\((.*?)\)/;
     return markdownRegex.test(text);
 }
+
+

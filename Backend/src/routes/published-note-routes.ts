@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { handlGetPublishedNote } from "../controllers/public-note-controller";
+import { handleGetPublishedNote } from "../controllers/public-note-controller";
 
 const router = Router()
-router.get("/:id", handlGetPublishedNote)
+router.get("/:id", handleGetPublishedNote)
 
 export default router

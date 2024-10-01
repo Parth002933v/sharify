@@ -8,8 +8,7 @@ export default function DropZone2() {
   const [file, setFile] = useState<File | null>(null);
   const { toast } = useToast();
 
-  const [uploadFile, { isLoading, isSuccess, data }] =
-    useUploadFileMutation();
+  const [uploadFile, { isLoading, isSuccess, data }] = useUploadFileMutation();
 
   const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -59,7 +58,7 @@ export default function DropZone2() {
   };
 
   useEffect(() => {
-    if (isSuccess == true) {
+    if (isSuccess) {
       setFile(null);
     }
   }, [isSuccess]);
@@ -117,6 +116,9 @@ export default function DropZone2() {
             >
               {data.data.secureUrl}
             </Link>
+          </div>
+          <div className={"italic text-red-500"}>
+            Link will be valid till 30 days
           </div>
           <button
             className="mt-2 rounded bg-gray-500 p-2 text-white"

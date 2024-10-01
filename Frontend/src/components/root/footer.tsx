@@ -19,19 +19,13 @@ export default function Footer() {
 
         {/* Navigation Links */}
         <div className="mb-4 flex space-x-6 md:mb-0">
-          <a href="#about" className="transition-colors hover:text-teal-400">
-            About Us
-          </a>
-          <a href="#features" className="transition-colors hover:text-teal-400">
-            Features
-          </a>
+          <a className="transition-colors hover:text-teal-400">About Us</a>
+          <a className="transition-colors hover:text-teal-400">Features</a>
           <Link to="/faq" className="transition-colors hover:text-teal-400">
             FAQ
           </Link>{" "}
           {/* FAQ Link */}
-          <a href="#contact" className="transition-colors hover:text-teal-400">
-            Contact
-          </a>
+          <a className="transition-colors hover:text-teal-400">Contact</a>
         </div>
 
         {/* Social Media Icons */}

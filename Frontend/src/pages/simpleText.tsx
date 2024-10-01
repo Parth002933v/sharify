@@ -1,5 +1,5 @@
 // React Imports
-import { useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // Internal Imports
 import { Textarea } from "../components/ui/textarea";
@@ -10,26 +10,53 @@ import { setText } from "@/features/note/note-slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useNoteFetcher } from "@/hooks/useNoteFetcher";
 import MarkdownRenderer from "@/utils/MarkdownRender";
+import { encrypt } from "@/lib/encryptionAndDecyption.ts";
 
 export default function SimpleText() {
-  const { debouncedMutate } = useDebouncedMutation();
-  const { text } = useNoteFetcher({ noteType: "markdown" });
+  const [inputText, setInputText] = useState<string>("");
 
+  const { debouncedMutate } = useDebouncedMutation();
+  const { text } = useNoteFetcher({
+    noteType: "markdown",
+  });
+
+  useEffect(() => {
+    setInputText(text);
+  }, [text]);
+
+  // states
   const dispatch = useAppDispatch();
   const currentEditorState = useAppSelector(
     (state) => state.simpleNote.currentEditorState,
   );
+  const encryptedPassword = useAppSelector(
+    (state) => state.simpleNote.encrypted,
+  );
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newText = e.target.value;
-    dispatch(setText(newText));
+  const handleTextChange = async (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const newInputText = e.target.value;
+    setInputText(newInputText);
+
+    // Only encrypt if there's an encrypted password
+    let encryptedText = newInputText;
+    console.log("encryptedPassword: ", encryptedPassword);
+    if (encryptedPassword) {
+      encryptedText = await encrypt(newInputText, encryptedPassword);
+    }
+
+    dispatch(setText(newInputText));
 
     const mutationData: TNote = {
-      content: newText,
+      content: encryptedText,
       hashID: location.hash.replace("#", ""),
-      isProtected: false,
+      isProtected: !!encryptedPassword,
       noteType: "markdown",
     };
+
+    console.log(mutationData);
+
     debouncedMutate(mutationData);
   };
 
@@ -39,7 +66,7 @@ export default function SimpleText() {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
-  }, [text, textareaRef.current]);
+  }, [inputText]);
 
   useEffect(() => {
     return () => {
@@ -53,8 +80,8 @@ export default function SimpleText() {
         {currentEditorState == "editor" ? (
           <Textarea
             ref={textareaRef}
-            className="text-md min-h-[900px] resize-none overflow-hidden"
-            value={text}
+            className="text-md min-h-[900px] resize-none overflow-scroll"
+            value={inputText}
             placeholder="Enter Your text here..."
             onChange={handleTextChange}
           />
@@ -62,7 +89,14 @@ export default function SimpleText() {
           <div className="prose w-full max-w-[1100px] rounded-md px-6 py-7">
             {/* {htmlContent} */}
             <MarkdownRenderer content={text} />
-            {/* <ReactMarkdown
+          </div>
+        )}
+      </div>
+    </ActionWrappper>
+  );
+}
+{
+  /* <ReactMarkdown
               rehypePlugins={[remarkgfm, rehypeRaw]}
               components={{
                 code(props) {
@@ -83,10 +117,5 @@ export default function SimpleText() {
               }}
             >
               {text}
-            </ReactMarkdown> */}
-          </div>
-        )}
-      </div>
-    </ActionWrappper>
-  );
+            </ReactMarkdown> */
 }
