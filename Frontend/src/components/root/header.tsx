@@ -84,7 +84,7 @@ export default function Header() {
         </nav>
 
         {/* Optional Button for Creating */}
-        <Link to="/get-started">
+        <Link to="#" onClick={() => generateAndSetHash()}>
           <button className="ml-4 rounded-full bg-blue-600 px-4 py-2 text-white shadow transition hover:bg-blue-700">
             Get Started
           </button>

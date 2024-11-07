@@ -1,26 +1,28 @@
-// Convert a string to an ArrayBuffer
 function stringToArrayBuffer(str: string): ArrayBuffer {
   return new TextEncoder().encode(str).buffer;
 }
 
-// Convert an ArrayBuffer to a hex string
 function arrayBufferToHex(buffer: ArrayBuffer): string {
-  return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(buffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
-// Convert a hex string to an ArrayBuffer
 function hexToArrayBuffer(hex: string): ArrayBuffer {
-  return new Uint8Array(hex.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16))).buffer;
+  return new Uint8Array(hex.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16)))
+    .buffer;
 }
 
-// Derive key from password and salt
-async function deriveKey(password: string, salt: ArrayBuffer): Promise<CryptoKey> {
+async function deriveKey(
+  password: string,
+  salt: ArrayBuffer,
+): Promise<CryptoKey> {
   const keyMaterial = await window.crypto.subtle.importKey(
     "raw",
     stringToArrayBuffer(password),
     { name: "PBKDF2" },
     false,
-    ["deriveKey"]
+    ["deriveKey"],
   );
 
   return window.crypto.subtle.deriveKey(
@@ -28,18 +30,16 @@ async function deriveKey(password: string, salt: ArrayBuffer): Promise<CryptoKey
       name: "PBKDF2",
       salt: salt,
       iterations: 100000,
-      hash: "SHA-256"
+      hash: "SHA-256",
     },
     keyMaterial,
     { name: "AES-CBC", length: 256 },
     false,
-    ["encrypt", "decrypt"]
+    ["encrypt", "decrypt"],
   );
 }
 
-// Encrypt function using Web Crypto API
 async function encrypt(text: string, password?: string): Promise<string> {
-
   if (!password) {
     return text;
   }
@@ -51,15 +51,17 @@ async function encrypt(text: string, password?: string): Promise<string> {
   const encrypted = await window.crypto.subtle.encrypt(
     { name: "AES-CBC", iv: iv },
     key,
-    stringToArrayBuffer(text)
+    stringToArrayBuffer(text),
   );
 
   // Return salt, iv, and encrypted data as hex strings
   return `${arrayBufferToHex(salt)}:${arrayBufferToHex(iv)}:${arrayBufferToHex(encrypted)}`;
 }
 
-// Decrypt function using Web Crypto API
-async function decrypt(encryptedText: string, password: string): Promise<string | null> {
+async function decrypt(
+  encryptedText: string,
+  password: string,
+): Promise<string | null> {
   try {
     const parts = encryptedText.split(":");
     const salt = hexToArrayBuffer(parts[0]);
@@ -71,14 +73,12 @@ async function decrypt(encryptedText: string, password: string): Promise<string 
     const decrypted = await window.crypto.subtle.decrypt(
       { name: "AES-CBC", iv: new Uint8Array(iv) },
       key,
-      encryptedData
+      encryptedData,
     );
 
-    // Convert ArrayBuffer back to string
     return new TextDecoder().decode(decrypted);
   } catch (error) {
     console.error("Decryption failed:", error);
-    // Return null to indicate decryption failure, possibly due to incorrect password
     return null;
   }
 }
@@ -98,7 +98,6 @@ export { encrypt, decrypt };
 //   const decryptedData = await decrypt(encryptedData, password);
 //   console.log("Decrypted:", decryptedData);
 // })();
-
 
 //*========================================================================================================
 

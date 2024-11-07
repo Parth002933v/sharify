@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setPublishedURL, toggleEditorState } from "@/features/note/note-slice";
 import { usePublishNoteMutation } from "@/features/note/notesAPI";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
 import { isErrorWithMessage, isFetchBaseQueryError } from "@/utils/helper";
 
 export default function MenuBar() {
@@ -81,9 +80,10 @@ export default function MenuBar() {
           onClick={async () => {
             if (publishedURL) {
               // If the note is already published, navigate to the published URL
-              window.location.href = publishedURL;
+              // window.location.href = publishedURL;
+              window.open(publishedURL, "_blank");
             } else if (!isLoading) {
-              // If the note is not yet published and it's not loading, try publishing it
+              // If the note is not yet published and its not loading try publishing it
               try {
                 const result = await publishNoteMutation({
                   hashID: hashID!,

@@ -1,5 +1,5 @@
 // src/hocs/withBorder.tsx
-import React, { ComponentType } from "react";
+import { ComponentType } from "react";
 
 type withEditorMenusProps = {
   // Additional props specific to HOC can be defined here

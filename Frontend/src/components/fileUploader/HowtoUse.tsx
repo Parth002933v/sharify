@@ -1,10 +1,4 @@
-import React from "react";
-
-import cloud from "../Assets/cloud.jpeg";
-import secureImg from "../assets/securImg.jpg";
 import filUpload from "@/Assets/fileUpload.jpg";
-import shareLink from "../Assets/shareLink.jpg";
-import easy from "../Assets/easy.jpg";
 import link from "@/Assets/file-upload.png";
 
 export default function HowtoUse() {

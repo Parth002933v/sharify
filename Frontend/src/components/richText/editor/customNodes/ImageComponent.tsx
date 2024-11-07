@@ -27,6 +27,8 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import TreeViewPlugin from "../customPlugins/TreeViewPlugin";
+import { useLexicalNodeSelection } from "@lexical/react/useLexicalNodeSelection";
+import { useCollaborationContext } from "@lexical/react/LexicalCollaborationContext";
 
 export default function ImageComponent({
   src,

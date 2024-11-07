@@ -1,37 +1,36 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
-  REDO_COMMAND,
-  UNDO_COMMAND,
-  SELECTION_CHANGE_COMMAND,
-  FORMAT_TEXT_COMMAND,
-  FORMAT_ELEMENT_COMMAND,
+  $createParagraphNode,
   $getSelection,
   $isRangeSelection,
-  $createParagraphNode,
+  FORMAT_ELEMENT_COMMAND,
+  FORMAT_TEXT_COMMAND,
   RangeSelection,
+  REDO_COMMAND,
+  SELECTION_CHANGE_COMMAND,
+  UNDO_COMMAND,
 } from "lexical";
-import { $setBlocksType } from "@lexical/selection";
-import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
-import { useCallback } from "react";
 import {
+  $isAtNodeEnd,
+  $isParentElementRTL,
+  $setBlocksType,
+  $wrapNodes,
+} from "@lexical/selection";
+import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
+import {
+  $isListNode,
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
-  $isListNode,
   ListNode,
 } from "@lexical/list";
 import {
-  $isHeadingNode,
   $createHeadingNode,
   $createQuoteNode,
+  $isHeadingNode,
   HeadingTagType,
 } from "@lexical/rich-text";
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
-import {
-  $isParentElementRTL,
-  $wrapNodes,
-  $isAtNodeEnd,
-} from "@lexical/selection";
 import { EventType, eventTypes } from "./toolbarIconsList";
 import useModal from "@/common/hooks/useModal";
 // import { ImagePayload } from "../customNodes/imageNode";
@@ -186,7 +185,7 @@ const useOnClickListener = () => {
         // showModal: JSX.Element | ((title: string, getContent: any, closeOnClickOutside?: boolean) => void) | null
 
         // return showModal("insertImage", (close) => <div></div>);
-        const payload= {
+        const payload = {
           src: "https://playground.lexical.dev/assets/yellow-flower-vav9Hsve.jpg",
           altText: "sample image",
         };
